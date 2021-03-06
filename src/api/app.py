@@ -1,19 +1,20 @@
+from src.services.crud import groups
 from fastapi import FastAPI
-from src.services.crud import users
+from .routers import users
+from .routers import groups
+from .routers import join_group
+from .routers import messages
+from .routers import send_message
 
 app = FastAPI()
 
+app.include_router(users.router)
+app.include_router(groups.router)
+app.include_router(join_group.router)
+app.include_router(messages.router)
+app.include_router(send_message.router)
+
 
 @app.get("/")
-def hello():
-    return {"ok": True}
-
-
-@app.post("/users")
-def create_user():
-    username = "vuonglv"
-    password = ""
-    user_id = users.create_user(username, password)
-    if user_id:
-        return {"success": True}
-    return {"success": False}
+async def root():
+    return {"message": "Hello Bigger Applications!"}
