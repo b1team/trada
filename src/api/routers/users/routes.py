@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from src.services.crud import users
 
@@ -42,12 +43,11 @@ def update_user(user):
     return {"success": False}
 
 
-@router.delete("/users/{username}", tags=["user"])
+@router.delete("/users/{username}", response_model=None)
 def delete_user(username: str):
     if username is None:
-        username = "vuonglv"
+        raise HTTPException(status_code=404, detail="Please input username")
     user_delete = users.delete_user(username)
     if user_delete:
-        return {"success": True}
-
+        return {f"User {username} has been deleted"}
     return {"success": False}
