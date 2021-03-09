@@ -8,7 +8,7 @@ from . import schemas
 router = APIRouter(tags=["user"])
 
 
-@router.get("/users/{username}", response_model=None)
+@router.get("/users/{username}", response_model=schemas.UserProfileResponseSchema)
 def get_user_profile(username: str):
     if username is None:
         raise HTTPException(status_code=404, detail="Please enter username")
