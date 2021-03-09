@@ -1,5 +1,5 @@
-from .models import User
-# from src.libs.data_manager import DataManager
+from typing import Optional
+from src.libs.models.users import User
 
 
 def check_user_exist(username):
@@ -9,11 +9,18 @@ def check_user_exist(username):
     return False
 
 
-def save_user(username, password):
-    user = User(username=username, password=password)
-    user.save()
+def get_user(username: str):
+    return User.objects(username=username).first()
 
-    return True
+
+def save_user(
+    username: str,
+    password: str,
+    name: Optional[str] = None,
+    avatar: Optional[str] = None,
+):
+    user = User(username=username, password=password, name=name, avatar=avatar)
+    return user.save()
 
 
 def get_user_profile(username):
@@ -25,10 +32,10 @@ def get_user_profile(username):
 def update_current_user(username, password, avatar, name):
     user = User.objects(username=username)
     fileds = {
-        'username': username,
-        'password': password,
-        'avatar': avatar,
-        'name': name,
+        "username": username,
+        "password": password,
+        "avatar": avatar,
+        "name": name,
     }
     user.update(**fileds)
     user.reload()

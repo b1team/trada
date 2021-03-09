@@ -1,18 +1,18 @@
-from .logic import (check_user_exist,
-                    save_user,
-                    update_current_user,
-                    delete_current_user,
-                    get_user_profile)
-# from src.libs.data_manager import MongodbManager
+from typing import Optional
+from . import logic
+from src.api.exceptions import user_errors
 
 
-def create_user(username: str, password: str):
-    user_exist = check_user_exist(username)
-    if not user_exist:
-        new_user = save_user(username, password)
-        return new_user
-
-    return False
+def create_user(
+    username: str,
+    password: str,
+    name: Optional[str] = None,
+    avatar: Optional[str] = None,
+):
+    existing_user = logic.get_user(username)
+    if existing_user:
+        raise user_errors.ExistingError(obj=f"User {username}")
+    return logic.save_user(username, password, name, avatar)
 
 
 def get_user(username: str):

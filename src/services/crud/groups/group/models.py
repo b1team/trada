@@ -3,7 +3,7 @@ import datetime
 
 
 class Groups(db.Document):
-    group_id = db.ObjectIdField(db_field='_id')
+    group_id = db.ObjectIdField(db_field="_id")
     group_name = db.StringField(required=True, unique=True)
     group_avatar = db.URLField(default="https://www.default.com/")
     last_message = db.DictField(default={})

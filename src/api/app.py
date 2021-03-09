@@ -1,10 +1,11 @@
-from src.services.crud import groups
 from fastapi import FastAPI
-from .routers import users
-from .routers import groups
-from .routers import join_group
-from .routers import messages
-from .routers import send_message
+from fastapi.responses import RedirectResponse
+from starlette.routing import Host
+from src.config import settings
+from mongoengine import connect, disconnect
+from src.services.crud import groups
+
+from .routers import groups, join_group, messages, send_message, users
 
 app = FastAPI()
 
@@ -17,4 +18,14 @@ app.include_router(send_message.router)
 
 @app.get("/")
 async def root():
-    return {"message": "Hello Bigger Applications!"}
+    return RedirectResponse("/docs")
+
+
+@app.on_event("startup")
+def startup_event():
+    connect(host=settings.DB_URI)
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    disconnect()
