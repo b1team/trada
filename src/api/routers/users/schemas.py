@@ -16,3 +16,8 @@ class CreateUserResponseSchema(BaseModel):
     name: Optional[str] = None
     avatar: Optional[str] = None
     created_at: datetime
+
+
+class UpdateUserSchema(BaseModel):
+    name: Optional[str] = None
+    avatar: Optional[str] = None

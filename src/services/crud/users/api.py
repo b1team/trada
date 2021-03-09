@@ -24,13 +24,15 @@ def get_user(username: str):
     return False
 
 
-def update_user(username: str, password: str, avatar: str, name: str):
-    user_exist = check_user_exist(username)
-    if user_exist:
-        user_update = update_current_user(username, password, avatar, name)
+def update_user(username: str,
+                avatar: Optional[str] = None,
+                name: Optional[str] = None):
+    existing_user = logic.get_user(username)
+    if existing_user:
+        user_update = logic.update_current_user(username, avatar, name)
         return user_update
-
-    return False
+    else:
+        raise user_errors.NotFoundError(obj=f"User {username}")
 
 
 def delete_user(username: str):
