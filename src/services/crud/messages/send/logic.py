@@ -1,5 +1,5 @@
 from ...messages.message import save
-from ....crud.groups.group_join.models import Group_members
+from src.libs.models.groups_join import Group_members
 
 def send_private(content, senderId, sendername, recivedname):
     message = save(content, senderId, sendername, recivedname)

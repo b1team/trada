@@ -1,13 +1,15 @@
 from .logic import join_group
-from ..group.logic import check_group_exists
-from src.services.crud.users.logic import check_user_exist 
+from src.services.crud.groups.group.logic import check_group_exists
+from src.services.crud.users.logic import get_user
+from src.api.exceptions import user_errors
 
+def to_join_group(member_name: str, group_name: str):
+    user_exist = get_user(member_name)
+    if not user_exist:
+        raise user_errors.NotFoundError(obj=f"User {member_name}")
 
-def to_join_group(member_name, group_name):
-    user_exist = check_user_exist(member_name)
     group_exist = check_group_exists(group_name)
-    if user_exist and group_exist:
-        join = join_group(member_name, group_name)
-        return join
+    if not group_exist:
+        raise user_errors.NotFoundError(obj=f"Group {group_name}")
 
-    return False
+    return join_group(member_name, group_name)
