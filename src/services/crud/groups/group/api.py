@@ -16,13 +16,11 @@ def create_group(
     return logic.save_group(group_name, user_created)
 
 
-def get_group(group_name:str):
-    group_exist = check_group_exists(group_name)
-    if group_exist:
-        group = get_group_profile(group_name)
-        return group
-
-    return False
+def get_group(group_name: str):
+    group_exist = logic.get_group(group_name)
+    if not group_exist:
+        raise user_errors.NotFoundError(obj=f"Group {group_name}")
+    return logic.get_group(group_name)
 
 
 def update_group(group_name:str, group_avatar:str):
@@ -34,10 +32,8 @@ def update_group(group_name:str, group_avatar:str):
     return False
 
 
-def delete_group(group_name:str):
-    group_exist = check_group_exists(group_name)
-    if group_exist:
-        group = destroy_group(group_name)
-        return group
-
-    return False
+def delete_group(group_name: str):
+    group_exist = logic.get_group(group_name)
+    if not group_exist:
+        raise user_errors.NotFoundError(obj=f"Group {group_name}")
+    return logic.delete_group(group_name)
