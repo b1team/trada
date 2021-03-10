@@ -1,17 +1,25 @@
-from .models import Messages
+from src.libs.models.message import Messages
 from bson import ObjectId
+from typing import Optional
 
 
-def save_messages(content, senderId, sendername, recivedname, date, timestamp):
-    message = Messages.objects(content=content,
-                               senderId=senderId,
-                               sendername=sendername,
-                               recivedname=recivedname,
-                               date=date,
-                               timestamp=timestamp)
-    message.save()
+def save_messages(
+    content: str,
+    senderId: str,
+    sendername: Optional[str] = None,
+    recivedname: Optional[str] = None,
+    date: Optional[str] = None,
+    timestamp: Optional[str] = None
+):
+    new_message = Messages(
+        content=content,
+        senderId=senderId,
+        sendername=sendername,
+        recivedname=recivedname,
+        date=date,
+        timestamp=timestamp)
 
-    return True
+    return new_message.save()
 
 
 def get_messages(sendername, recivedname):
@@ -30,7 +38,6 @@ def update_messages(message_id, content):
     }
 
     message.update(**filed)
-    message.reload()
 
     return True
 

@@ -1,24 +1,22 @@
 from fastapi import APIRouter
 from src.services.crud.messages import message
-from ..basemodels import Messages_save, Messages_ud
+from . import schemas
 
 router = APIRouter(prefix="/messages", tags=["messages"])
 
-@router.post("/messages", tags=["messages"])
-def save_messages(message: Messages_save):
-    message_save = message.save(message.content,
-                                message.senderId,
-                                message.sendername,
-                                message.recivedname)
+@router.post("/messages", response_model=schemas.MessagesSaveResponeSchema)
+def save_messages(message_new: schemas.MessagesSaveSchema):
+    _message = message.save_message(
+        message_new.content,
+        message_new.senderId,
+        message_new.sendername,
+        message_new.recivedname)
 
-    if message_save:
-        return {"success": True}
-
-    return {"success": False}
+    return _message.to_dict()
 
 
 @router.put("/messages", tags=["messages"])
-def update_message(message: Messages_ud):
+def update_message(message: schemas.MessagesUpdateSchema):
     update_message = message.update(message.mess_id,
                                     message.content)
 
@@ -29,7 +27,7 @@ def update_message(message: Messages_ud):
 
 
 @router.delete("/messages", tags=["messages"])
-def delete_message(message: Messages_ud):
+def delete_message(message: schemas.MessagesDeleteSchema):
     delete_mess = message.delete(message.sendername,
                                  message.recivedname,
                                  message.content)
