@@ -1,6 +1,7 @@
 from . import logic
 from src.api.exceptions import user_errors
 from src.services.crud.users.logic import get_user
+from typing import Optional
 
 
 def create_group(
@@ -25,13 +26,14 @@ def get_group(group_name:str):
     return False
 
 
-def update_group(group_name:str, group_avatar:str):
-    group_exist = check_group_exists(group_name)
-    if group_exist:
-        group = update_group_profile(group_name, group_avatar)
-        return group
-
-    return False
+def update_group(
+    group_name: str,
+    group_avatar: Optional[str] = None
+):
+    group_exist = logic.get_group(group_name)
+    if not group_exist:
+        raise user_errors.NotFoundError(obj=f"Group {group_name}")
+    return logic.update_group_profile(group_name, group_avatar)
 
 
 def delete_group(group_name:str):

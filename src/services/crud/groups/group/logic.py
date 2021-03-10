@@ -1,4 +1,5 @@
 from src.libs.models.groups import Groups
+from typing import Optional
 
 
 def check_group_exists(group_name):
@@ -29,14 +30,15 @@ def get_group_profile(group_name):
     return group.to_json()
 
 
-def update_group_profile(group_name, group_avatar):
+def update_group_profile(
+    group_name: str,
+    group_avatar: Optional[str] = None
+):
     group = Groups.objects(group_name=group_name)
     fileds = {
-        "group_name": group_name,
         "group_avatar": group_avatar,
     }
     group.update(**fileds)
-    group.reload()
 
     return True
 
