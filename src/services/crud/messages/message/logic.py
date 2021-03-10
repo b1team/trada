@@ -31,8 +31,15 @@ def get_messages(sendername, recivedname):
     return list_messages
 
 
-def update_messages(message_id, content):
-    message = Messages.objects(message_id=ObjectId(message_id))
+def get_one_message(message_id):
+    return Messages.objects(id=ObjectId(message_id)).first()
+
+
+def update_messages(
+    message_id: str,
+    content: str
+):
+    message = Messages.objects(id=ObjectId(message_id))
     filed = {
         "content": content,
     }

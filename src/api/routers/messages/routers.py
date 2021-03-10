@@ -15,14 +15,14 @@ def save_messages(message_new: schemas.MessagesSaveSchema):
     return _message.to_dict()
 
 
-@router.put("/messages", tags=["messages"])
-def update_message(message: schemas.MessagesUpdateSchema):
-    update_message = message.update(message.mess_id,
-                                    message.content)
+@router.put("/messages", response_model=None)
+def update_message(message_update: schemas.MessagesUpdateSchema):
+    update_message = message.update(
+        message_update.message_id,
+        message_update.content)
 
     if update_message:
-        return {"success": True}
-
+        return {"Message has been update"}
     return {"success": False}
 
 

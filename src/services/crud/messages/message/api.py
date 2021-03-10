@@ -43,10 +43,11 @@ def delete(sendername:str, recivedname:str, content:str):
     return False
 
 
-def update(message_id:str, content:str):
-    update_message = update_messages(message_id, content)
-
-    if update_message is not None:
-        return True
-
-    return False
+def update(
+    message_id: str,
+    content: str
+):
+    message_exist = logic.get_one_message(message_id)
+    if not message_exist:
+        return user_errors.NotFoundError(obj=f"Messages")
+    return logic.update_messages(message_id, content)
