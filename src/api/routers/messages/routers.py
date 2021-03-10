@@ -39,12 +39,13 @@ def delete_message(message_id):
     return {"success": False}
 
 
-@router.get("/messages", response_model=schemas.MessagesGetResponeSchema)
-def get_messages(mess: schemas.MessagesGetSchema):
+@router.get("/messages/{sendername}", response_model=None)
+def get_messages(sendername: str, recivedname: str):
+    if (recivedname is None) or (sendername is None):
+        raise HTTPException(status_code=404, detail="Please enter a full info")
     _messages = message.messages_get(
-        mess.sendername,
-        mess.recivedname)
-    # bi loi (TypeError: Window.fetch: HEAD or GET Request cannot have a body)
+        sendername,
+        recivedname)
     if _messages is not None:
         return {"messages": _messages}
 

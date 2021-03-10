@@ -26,8 +26,8 @@ def save_message(
 
 
 def messages_get(
-    sendername: Optional[str] = None,
-    recivedname: Optional[str] = None
+    sendername: str,
+    recivedname: str
 ):
     sender_exist = get_user(sendername)
     if not sender_exist:

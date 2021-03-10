@@ -23,8 +23,8 @@ def save_messages(
 
 
 def get_all_messages(
-    sendername: Optional[str] = None,
-    recivedname: Optional[str] = None,
+    sendername: str,
+    recivedname: str,
 ):
     messages = Messages.objects(
         sendername=sendername,

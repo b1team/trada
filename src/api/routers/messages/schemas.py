@@ -34,7 +34,7 @@ class MessagesGetResponeSchema(BaseModel):
     message_id: str
     content: str
     senderId: str
-    sendername: Optional[str] = None
-    recivedname: Optional[str] = None
-    date: Optional[str] = None
-    timestamp: Optional[str] = None
+    sendername: str
+    recivedname: str
+    date: str
+    timestamp: str
