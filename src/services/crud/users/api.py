@@ -1,6 +1,9 @@
 from typing import Optional
 from . import logic
-from src.api.exceptions import user_errors
+from src.api.exceptions import (
+    user_errors,
+    internal_errors
+    )
 
 
 def create_user(
@@ -29,7 +32,10 @@ def update_user(username: str,
                 name: Optional[str] = None):
     existing_user = logic.get_user(username)
     if existing_user:
-        user_update = logic.update_current_user(username, avatar, name)
+        try:
+            user_update = logic.update_current_user(username, avatar, name)
+        except:
+            raise internal_errors.InternalError(detail="Could not update user")
         return user_update
     else:
         raise user_errors.NotFoundError(obj=f"User {username}")

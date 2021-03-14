@@ -30,7 +30,7 @@ def create_user(user: schemas.CreateUserSchema):
     return new_user.to_dict()
 
 
-@router.put("/users/{username}", response_model=None)
+@router.put("/users/{username}", response_model=schemas.UpdateUserResponseSchema)
 def update_user(
     username: str,
     user: schemas.UpdateUserSchema
@@ -41,8 +41,8 @@ def update_user(
         user.name
         )
     if new_user_info:
-        return {f"{username} profile has been updated"}
-    return {"success": False}
+        return user
+
 
 
 @router.delete("/users/{username}", tags=["user"])

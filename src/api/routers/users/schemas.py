@@ -21,3 +21,8 @@ class CreateUserResponseSchema(BaseModel):
 class UpdateUserSchema(BaseModel):
     name: Optional[str] = None
     avatar: Optional[str] = None
+
+
+class UpdateUserResponseSchema(BaseModel):
+    name: Optional[str] = None
+    avatar: Optional[str] = None
