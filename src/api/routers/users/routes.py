@@ -43,11 +43,9 @@ def update_user(user):
     return {"success": False}
 
 
-@router.delete("/users/{username}", response_model=None)
+@router.delete("/users/{username}", response_model=schemas.BasicResponse)
 def delete_user(username: str):
-    if username is None:
-        raise HTTPException(status_code=404, detail="Please input username")
     user_delete = users.delete_user(username)
     if user_delete:
-        return {f"User {username} has been deleted"}
+        return {"info": f"User {username} has been deleted"}
     return {"success": False}
