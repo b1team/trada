@@ -1,18 +1,18 @@
 from fastapi import APIRouter
-from src.services.crud.messages import send
+from src.services import message_management as send
+
 from . import schemas
 
-router = APIRouter(prefix="/send_message", tags=["send_message"])
+router = APIRouter(prefix="/message_management", tags=["message_management"])
 
-@router.post("/send", response_model=None)
-def send_messages(message: schemas.MessagesSaveSchema):
-    messages = send.send_message(
-        message.content,
-        message.senderId,
-        message.sendername,
-        message.recivedname)
+
+@router.post("/send_message",
+             response_model=schemas.MessagesSendResponseSchema)
+def send_messages(message: schemas.MessagesSendSchema):
+    messages = send.send_message(message.content, message.sender_id,
+                                 message.receiver_id)
 
     if messages is not None:
-        return {"success": messages}
+        return messages.to_dict()
 
     return {"success": False}

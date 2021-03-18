@@ -8,9 +8,8 @@ router = APIRouter(prefix="/messages", tags=["messages"])
 def save_messages(message_new: schemas.MessagesSaveSchema):
     _message = message.save_message(
         message_new.content,
-        message_new.senderId,
-        message_new.sendername,
-        message_new.recivedname)
+        message_new.sender_id,
+        message_new.reciver_id)
 
     return _message.to_dict()
 

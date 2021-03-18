@@ -1,28 +1,26 @@
-from . import logic
-import datetime
 from typing import Optional
+
 from src.api.exceptions import user_errors
-from src.services.crud.users.logic import get_user
-from src.services.crud.groups.group.logic import get_group
+from src.services.crud.groups.group.logic import check_group_exists
+from src.services.crud.users.logic import check_user_exist
+
+from . import logic
 
 
 def save_message(
     content: str,
-    senderId: str,
-    sendername: Optional[str] = None,
-    recivedname: Optional[str] = None,
+    sender_id: str,
+    receiver_id: Optional[str] = None,
 ):
-    sender_exist = get_user(sendername) or get_group(sendername)
+    sender_exist = check_user_exist(sender_id) or check_group_exists(sender_id)
     if not sender_exist:
-        raise user_errors.NotFoundError(obj=f"User {sendername}")
-    receiver_exist = get_group(recivedname) or get_group(recivedname)
+        raise user_errors.NotFoundError(obj=f"User {sender_id}")
+    receiver_exist = check_user_exist(receiver_id) or check_group_exists(receiver_id)
     if not receiver_exist:
-        raise user_errors.NotFoundError(obj=f"Receiver {recivedname}")
+        raise user_errors.NotFoundError(obj=f"Receiver {receiver_id}")
 
-    date = datetime.datetime.utcnow().strftime("%d %B")
-    timestamp = datetime.datetime.utcnow().strftime("%H:%M")
 
-    return logic.save_messages(content, senderId, sendername, recivedname, date, timestamp)
+    return logic.save_messages(content, sender_id, receiver_id)
 
 
 def get(sendername:str, recivedname:str):

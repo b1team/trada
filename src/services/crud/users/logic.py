@@ -1,9 +1,10 @@
 from typing import Optional
 from src.libs.models.users import User
+from bson import ObjectId
 
 
-def check_user_exist(username):
-    user = User.objects(username=username).first()
+def check_user_exist(user_id):
+    user = User.objects(id=ObjectId(user_id)).first()
     if user:
         return True
     return False

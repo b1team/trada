@@ -3,25 +3,26 @@ from mongoengine import(
     StringField,
     BooleanField
 )
+from datetime import datetime
+
+from mongoengine.fields import DateTimeField
 
 
 class Messages(Document):
     content = StringField()
-    senderId = StringField()
-    sendername = StringField()
-    recivedname = StringField()
-    date = StringField(default="5 March")
-    timestamp = StringField(default="22:00")
-    seen = BooleanField(default=True)
+    sender_id = StringField()
+    receiver_id = StringField()
+    created_at = DateTimeField(default=datetime.utcnow())
+    updated_at = DateTimeField(default=datetime.utcnow())
+    seen = BooleanField(default=False)
 
     def to_dict(self):
         return {
             "message_id": str(self.id),
             "content": self.content,
-            "senderId": self.senderId,
-            "sendername": self.sendername,
-            "recivedname": self.recivedname,
-            "date": self.date,
-            "timestamp": self.timestamp,
+            "sender_id": self.sender_id,
+            "receiver_id": self.receiver_id,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
             "seen": self.seen,
         }
