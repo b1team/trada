@@ -9,15 +9,12 @@ from . import schemas
 router = APIRouter(tags=["user"])
 
 
-@router.get("/users/{username}", tags=["user"])
+@router.get("/users/{username}", response_model=schemas.UserProfileResponseSchema)
 def get_user_profile(username: str):
     if username is None:
-        username = "vuonglv"
+        raise HTTPException(status_code=404, detail="Please enter username")
     user = users.get_user(username)
-    if user is not None:
-        return user
-
-    return {"success": False}
+    return user.to_dict()
 
 
 @router.post("/users", response_model=schemas.CreateUserResponseSchema)

@@ -19,12 +19,11 @@ def create_user(
 
 
 def get_user(username: str):
-    user_exist = check_user_exist(username)
-    if user_exist:
-        user = get_user_profile(username)
-        return user
-
-    return False
+    existing_user = logic.get_user(username)
+    if existing_user:
+        return logic.get_user(username)
+    else:
+        raise user_errors.NotFoundError(obj=f"User {username}")
 
 
 def update_user(username: str,
