@@ -25,5 +25,16 @@ class MessagesUpdateSchema(BaseModel):
     content : str
 
 
-class MessagesDeleteSchema(BaseModel):
+class MessagesGetSchema(BaseModel):
+    sendername: Optional[str] = None
+    recivedname: Optional[str] = None
+
+
+class MessagesGetResponeSchema(BaseModel):
     message_id: str
+    content: str
+    senderId: str
+    sendername: str
+    recivedname: str
+    date: str
+    timestamp: str

@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from src.services.crud.messages import message
 from . import schemas
+from fastapi.exceptions import HTTPException
 
 router = APIRouter(prefix="/messages", tags=["messages"])
 
@@ -26,23 +27,26 @@ def update_message(message_update: schemas.MessagesUpdateSchema):
     return {"success": False}
 
 
-@router.delete("/messages", tags=["messages"])
-def delete_message(message: schemas.MessagesDeleteSchema):
-    delete_mess = message.delete(message.sendername,
-                                 message.recivedname,
-                                 message.content)
+@router.delete("/messages/{message_id}", response_model=None)
+def delete_message(message_id):
+    if message_id is None:
+        raise HTTPException(status_code=404, detail="Please enter a message id")
+    delete_mess = message.delete(message_id)
 
     if delete_mess:
-        return {"success": True}
+        return {"Message has been deleted"}
 
     return {"success": False}
 
 
-@router.get("/messages/{sendername}/{receivedname}", tags=["messages"])
-def get_message(sendername, recivedname):
-    messages = message.get(sendername, recivedname)
-
-    if messages is not None:
-        return {"messages": messages}
+@router.get("/messages/{sendername}", response_model=None)
+def get_messages(sendername: str, recivedname: str):
+    if (recivedname is None) or (sendername is None):
+        raise HTTPException(status_code=404, detail="Please enter a full info")
+    _messages = message.messages_get(
+        sendername,
+        recivedname)
+    if _messages is not None:
+        return {"messages": _messages}
 
     return {"success": False}
