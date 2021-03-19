@@ -1,9 +1,13 @@
 from src.libs.models.groups import Groups
+
 from typing import Optional
 
+from bson import ObjectId
 
-def check_group_exists(group_name):
-    group = Groups.objects(group_name=group_name).first()
+
+
+def check_group_exists(group_id):
+    group = Groups.objects(id=ObjectId(group_id)).first()
     if group:
         return True
 

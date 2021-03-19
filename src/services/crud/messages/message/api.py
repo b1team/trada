@@ -1,44 +1,56 @@
-from .logic import (save_messages,
-                    delete_messages,
-                    update_messages,
-                    get_messages)
-import datetime
-from bson import ObjectId
+from typing import Optional
+
+from src.api.exceptions import user_errors
+from src.services.crud.groups.group.logic import check_group_exists
+from src.services.crud.users.logic import check_user_exist
+
+from . import logic
 
 
-def save(content:str, senderId:ObjectId, sendername:str, recivedname:str):
-    date = datetime.datetime.utcnow().strftime("%d %B")
-    timestamp = datetime.datetime.utcnow().strftime("%H:%M")
-    senderId = ObjectId(senderId)
-    message = save_messages(content, senderId, sendername, recivedname, date, timestamp)
-    if message:
-        return True
-
-    return False
-
-
-def get(sendername:str, recivedname:str):
-    message = get_messages(sendername, recivedname)
-
-    if message is not None:
-        return message
-
-    return False
+def save_message(
+    content: str,
+    sender_id: str,
+    receiver_id: Optional[str] = None,
+):
+    sender_exist = check_user_exist(sender_id) or check_group_exists(sender_id)
+    if not sender_exist:
+        raise user_errors.NotFoundError(obj=f"User {sender_id}")
+    receiver_exist = check_user_exist(receiver_id) or check_group_exists(receiver_id)
+    if not receiver_exist:
+        raise user_errors.NotFoundError(obj=f"Receiver {receiver_id}")
 
 
-def delete(sendername:str, recivedname:str, content:str):
-    del_message = delete_messages(sendername, recivedname, content)
-
-    if del_message is not None:
-        return True
-
-    return False
+    return logic.save_messages(content, sender_id, receiver_id)
 
 
-def update(message_id:str, content:str):
-    update_message = update_messages(message_id, content)
+def messages_get(
+    sendername: str,
+    recivedname: str
+):
+    sender_exist = get_user(sendername)
+    if not sender_exist:
+        raise user_errors.NotFoundError(obj=f"User {sendername}")
+    recived_exist = get_user(recivedname) or get_group(recivedname)
+    if not recived_exist:
+        raise user_errors.NotFoundError(obj=f"User {recivedname}")
 
-    if update_message is not None:
-        return True
+    return logic.get_all_messages(sendername, recivedname)
 
-    return False
+
+
+def delete(message_id: str):
+    del_message = logic.delete_messages(message_id)
+
+    if not del_message:
+        raise user_errors.NotFoundError(obj=f"Message")
+    return del_message
+
+
+def update(
+    message_id: str,
+    content: str
+):
+    message_exist = logic.get_one_message(message_id)
+    if not message_exist:
+        return user_errors.NotFoundError(obj=f"Messages")
+    return logic.update_messages(message_id, content)

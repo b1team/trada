@@ -1,44 +1,57 @@
-from .models import Messages
+from typing import Optional
+
 from bson import ObjectId
+from src.libs.models.message import Messages
 
 
-def save_messages(content, senderId, sendername, recivedname, date, timestamp):
-    message = Messages.objects(content=content,
-                               senderId=senderId,
-                               sendername=sendername,
-                               recivedname=recivedname,
-                               date=date,
-                               timestamp=timestamp)
-    message.save()
+def save_messages(
+    content: str,
+    sender_id: str,
+    receiver_id: Optional[str] = None,
+):
+    new_message = Messages(
+        content=content,
+        sender_id=sender_id,
+        receiver_id=receiver_id)
 
-    return True
+    return new_message.save()
 
 
-def get_messages(sendername, recivedname):
-    messages = Messages.objects(sendername=sendername, recivedname=recivedname)
+def get_all_messages(
+    sendername: str,
+    recivedname: str,
+):
+    messages = Messages.objects(
+        sendername=sendername,
+        recivedname=recivedname)
+
     list_messages = []
     for message in messages:
-        list_messages.append(message)
+        list_messages.append(message.to_dict())
 
     return list_messages
 
 
-def update_messages(message_id, content):
-    message = Messages.objects(message_id=ObjectId(message_id))
+def get_one_message(message_id):
+    return Messages.objects(id=ObjectId(message_id)).first()
+
+
+def update_messages(
+    message_id: str,
+    content: str
+):
+    message = Messages.objects(id=ObjectId(message_id))
     filed = {
         "content": content,
     }
 
     message.update(**filed)
-    message.reload()
 
     return True
 
 
-def delete_messages(sendername, recivedname, content):
-    messages = Messages.objects(sendername=sendername,
-                                recivedname=recivedname,
-                                content=content)
+def delete_messages(message_id: str):
+    messages = Messages.objects(id=ObjectId(message_id))
     messages.delete()
 
     return True
