@@ -1,5 +1,7 @@
+from fastapi.exceptions import HTTPException
 from src.services.crud.groups import group
 from fastapi import APIRouter
+from . import schemas
 
 router = APIRouter(prefix="/groups", tags=["groups"])
 
@@ -15,18 +17,15 @@ def get_group_profile(group_name:str):
     return {"success": False}
 
 
-@router.post("/groups/{group_name}/{user_create}", tags=["groups"])
-def create_group(group_name:str, user_create:str):
-    if group_name is None:
-        group_name = "vuonglv"
-    if user_create is None:
-        user_create = "falcol"
-    new_group = group.create_group(group_name, user_create)
+@router.post("/groups", response_model=schemas.CreateGroupResponseSchema)
+def create_group(group_new: schemas.CreateGroupSchema):
+    if (group_new.group_name or group_new.user_created) is None:
+        raise HTTPException(status_code=404, detail="Please enter details of group")
+    Group = group.create_group(
+        group_name=group_new.group_name,
+        user_created=group_new.user_created)
 
-    if new_group:
-        return {"success": True}
-
-    return {"success": False}
+    return Group.to_dict()
 
 
 @router.put("/groups", tags=["groups"])

@@ -1,17 +1,19 @@
-from .logic import (check_group_exists,
-                    save_group,
-                    destroy_group,
-                    get_group_profile,
-                    update_group_profile)
+from . import logic
+from src.api.exceptions import user_errors
+from src.services.crud.users.logic import get_user
 
 
-def create_group(group_name:str, user_created:str):
-    group_exist = check_group_exists(group_name)
-    if not group_exist:
-        group = save_group(group_name, user_created)
-        return group
-
-    return False
+def create_group(
+    group_name:str,
+    user_created:str
+):
+    group_exist = logic.get_group(group_name)
+    user_exist = get_user(user_created)
+    if group_exist:
+        raise user_errors.ExistingError(obj=f"Group {group_name}")
+    if not user_exist:
+        raise user_errors.NotFoundError(obj=f"User {user_created}")
+    return logic.save_group(group_name, user_created)
 
 
 def get_group(group_name:str):
