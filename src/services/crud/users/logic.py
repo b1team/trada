@@ -43,7 +43,7 @@ def update_current_user(
     return True
 
 
-def delete_current_user(username):
+def remove_user(username):
     user = User.objects(username=username)
     user.delete()
 

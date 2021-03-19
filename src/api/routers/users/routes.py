@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from src.services.crud import users
 from src.services.crud.users.logic import get_user
@@ -45,12 +46,9 @@ def update_user(
 
 
 
-@router.delete("/users/{username}", tags=["user"])
+@router.delete("/users/{username}", response_model=schemas.BasicResponse)
 def delete_user(username: str):
-    if username is None:
-        username = "vuonglv"
     user_delete = users.delete_user(username)
     if user_delete:
-        return {"success": True}
-
+        return {"info": f"User {username} has been deleted"}
     return {"success": False}

@@ -42,9 +42,8 @@ def update_user(username: str,
 
 
 def delete_user(username: str):
-    user_exist = check_user_exist(username)
-    if user_exist:
-        delete_user = delete_current_user(username)
-        return delete_user
-
-    return False
+    existing_user = logic.get_user(username)
+    if existing_user:
+        return logic.remove_user(username)
+    else:
+        raise user_errors.NotFoundError(obj=f"User {username}")
