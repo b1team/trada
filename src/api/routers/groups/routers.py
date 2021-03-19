@@ -6,15 +6,13 @@ from . import schemas
 router = APIRouter(prefix="/groups", tags=["groups"])
 
 
-@router.get("/groups/{group_name}", tags=["groups"])
-def get_group_profile(group_name:str):
+@router.get("/groups/{group_name}", response_model=None)
+def get_group_profile(group_name: str):
     if group_name is None:
-        group_name = "vuonglv"
-    get_group = group.get_group(group_name)
-    if get_group is not None:
-        return get_group
+        raise HTTPException(status_code=404, detail="Please enter a group name")
+    Group = group.get_group(group_name)
 
-    return {"success": False}
+    return Group.to_dict()
 
 
 @router.post("/groups", response_model=schemas.CreateGroupResponseSchema)
@@ -40,12 +38,11 @@ def update_group(new_update: schemas.UpdateGroupSchema):
     return {"success": False}
 
 
-@router.delete("/groups/{group_name}", tags=["groups"])
-def delete_group(group_name:str):
+@router.delete("/groups/{group_name}", response_model=None)
+def delete_group(group_name: str):
     if group_name is None:
-        group_name = "vuonglv"
-    group = group.delete_group(group_name)
-    if group:
-        return {"success": True}
-
+        raise HTTPException(status_code=404, message="Please enter a group name")
+    group_delete = group.delete_group(group_name)
+    if group_delete:
+        return {f"Group {group_name} has been deleted"}
     return {"success": False}

@@ -47,7 +47,7 @@ def update_group_profile(
     return True
 
 
-def destroy_group(group_name):
+def delete_group(group_name):
     group = Groups.objects(group_name=group_name)
     group.delete()
 
