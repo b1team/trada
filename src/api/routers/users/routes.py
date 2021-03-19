@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from src.services.crud import users
+from src.services.crud.users.logic import get_user
 
 from . import schemas
 
@@ -30,17 +31,19 @@ def create_user(user: schemas.CreateUserSchema):
     return new_user.to_dict()
 
 
-@router.put("/users", tags=["user"])
-def update_user(user):
-    username = user.username
-    password = user.password
-    avatar = user.avatar_url
-    name = user.name
-    new_user_info = users.update_user(username, password, avatar, name)
+@router.put("/users/{username}", response_model=schemas.UpdateUserResponseSchema)
+def update_user(
+    username: str,
+    user: schemas.UpdateUserSchema
+):
+    new_user_info = users.update_user(
+        username,
+        user.avatar,
+        user.name
+        )
     if new_user_info:
-        return {"success": True}
+        return user
 
-    return {"success": False}
 
 
 @router.delete("/users/{username}", response_model=schemas.BasicResponse)

@@ -18,5 +18,15 @@ class CreateUserResponseSchema(BaseModel):
     created_at: datetime
 
 
+
 class BasicResponse(BaseModel):
     success: bool = True
+
+class UpdateUserSchema(BaseModel):
+    name: Optional[str] = None
+    avatar: Optional[str] = None
+
+
+class UpdateUserResponseSchema(BaseModel):
+    name: Optional[str] = None
+    avatar: Optional[str] = None
