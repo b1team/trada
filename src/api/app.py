@@ -1,19 +1,31 @@
 from fastapi import FastAPI
-from src.services.crud import users
+from fastapi.responses import RedirectResponse
+from starlette.routing import Host
+from src.config import settings
+from mongoengine import connect, disconnect
+from src.services.crud import groups
+
+from .routers import groups, join_group, messages, send_message, users
 
 app = FastAPI()
 
+app.include_router(users.router)
+app.include_router(groups.router)
+app.include_router(join_group.router)
+app.include_router(messages.router)
+app.include_router(send_message.router)
+
 
 @app.get("/")
-def hello():
-    return {"ok": True}
+async def root():
+    return RedirectResponse("/docs")
 
 
-@app.post("/users")
-def create_user():
-    username = "vuonglv"
-    password = ""
-    user_id = users.create_user(username, password)
-    if user_id:
-        return {"success": True}
-    return {"success": False}
+@app.on_event("startup")
+def startup_event():
+    connect(host=settings.DB_URI)
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    disconnect()
