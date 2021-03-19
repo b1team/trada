@@ -4,19 +4,17 @@ from typing import Optional
 
 class MessagesSaveSchema(BaseModel):
     content : str
-    senderId: str
-    sendername: Optional[str] = None
-    recivedname:Optional[str] = None
+    sender_id: str
+    reciver_id:Optional[str] = None
 
 
 class MessagesSaveResponeSchema(BaseModel):
     message_id: str
     content: str
-    senderId: str
-    sendername: Optional[str] = None
-    recivedname: Optional[str] = None
-    date: Optional[str] = None
-    timestamp: Optional[str] = None
+    sender_id: str
+    reciver_id: Optional[str] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
     seen: bool
 
 

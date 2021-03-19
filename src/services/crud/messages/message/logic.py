@@ -1,23 +1,18 @@
-from src.libs.models.message import Messages
-from bson import ObjectId
 from typing import Optional
+
+from bson import ObjectId
+from src.libs.models.message import Messages
 
 
 def save_messages(
     content: str,
-    senderId: str,
-    sendername: Optional[str] = None,
-    recivedname: Optional[str] = None,
-    date: Optional[str] = None,
-    timestamp: Optional[str] = None
+    sender_id: str,
+    receiver_id: Optional[str] = None,
 ):
     new_message = Messages(
         content=content,
-        senderId=senderId,
-        sendername=sendername,
-        recivedname=recivedname,
-        date=date,
-        timestamp=timestamp)
+        sender_id=sender_id,
+        receiver_id=receiver_id)
 
     return new_message.save()
 
