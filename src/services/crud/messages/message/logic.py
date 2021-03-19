@@ -17,17 +17,30 @@ def save_messages(
     return new_message.save()
 
 
-def get_messages(sendername, recivedname):
-    messages = Messages.objects(sendername=sendername, recivedname=recivedname)
+def get_all_messages(
+    sendername: str,
+    recivedname: str,
+):
+    messages = Messages.objects(
+        sendername=sendername,
+        recivedname=recivedname)
+
     list_messages = []
     for message in messages:
-        list_messages.append(message)
+        list_messages.append(message.to_dict())
 
     return list_messages
 
 
-def update_messages(message_id, content):
-    message = Messages.objects(message_id=ObjectId(message_id))
+def get_one_message(message_id):
+    return Messages.objects(id=ObjectId(message_id)).first()
+
+
+def update_messages(
+    message_id: str,
+    content: str
+):
+    message = Messages.objects(id=ObjectId(message_id))
     filed = {
         "content": content,
     }
@@ -37,10 +50,8 @@ def update_messages(message_id, content):
     return True
 
 
-def delete_messages(sendername, recivedname, content):
-    messages = Messages.objects(sendername=sendername,
-                                recivedname=recivedname,
-                                content=content)
+def delete_messages(message_id: str):
+    messages = Messages.objects(id=ObjectId(message_id))
     messages.delete()
 
     return True

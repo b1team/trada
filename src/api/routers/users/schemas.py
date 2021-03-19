@@ -16,3 +16,27 @@ class CreateUserResponseSchema(BaseModel):
     name: Optional[str] = None
     avatar: Optional[str] = None
     created_at: datetime
+
+
+
+class UserProfileResponseSchema(BaseModel):
+    user_id: str
+    username: str
+    avatar: Optional[str] = None
+    password: Optional[str] = None
+    name: str
+    created_at:datetime
+
+
+class BasicResponse(BaseModel):
+    success: bool = True
+
+class UpdateUserSchema(BaseModel):
+    name: Optional[str] = None
+    avatar: Optional[str] = None
+
+
+class UpdateUserResponseSchema(BaseModel):
+    name: Optional[str] = None
+    avatar: Optional[str] = None
+

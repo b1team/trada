@@ -30,21 +30,21 @@ def get_user_profile(username):
     return user.to_json()
 
 
-def update_current_user(username, password, avatar, name):
+def update_current_user(
+    username: str,
+    avatar: Optional[str] = None,
+    name: Optional[str] = None,):
     user = User.objects(username=username)
     fileds = {
-        "username": username,
-        "password": password,
         "avatar": avatar,
         "name": name,
     }
     user.update(**fileds)
-    user.reload()
 
     return True
 
 
-def delete_current_user(username):
+def remove_user(username):
     user = User.objects(username=username)
     user.delete()
 

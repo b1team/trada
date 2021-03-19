@@ -23,28 +23,34 @@ def save_message(
     return logic.save_messages(content, sender_id, receiver_id)
 
 
-def get(sendername:str, recivedname:str):
-    message = get_messages(sendername, recivedname)
+def messages_get(
+    sendername: str,
+    recivedname: str
+):
+    sender_exist = get_user(sendername)
+    if not sender_exist:
+        raise user_errors.NotFoundError(obj=f"User {sendername}")
+    recived_exist = get_user(recivedname) or get_group(recivedname)
+    if not recived_exist:
+        raise user_errors.NotFoundError(obj=f"User {recivedname}")
 
-    if message is not None:
-        return message
-
-    return False
-
-
-def delete(sendername:str, recivedname:str, content:str):
-    del_message = delete_messages(sendername, recivedname, content)
-
-    if del_message is not None:
-        return True
-
-    return False
+    return logic.get_all_messages(sendername, recivedname)
 
 
-def update(message_id:str, content:str):
-    update_message = update_messages(message_id, content)
 
-    if update_message is not None:
-        return True
+def delete(message_id: str):
+    del_message = logic.delete_messages(message_id)
 
-    return False
+    if not del_message:
+        raise user_errors.NotFoundError(obj=f"Message")
+    return del_message
+
+
+def update(
+    message_id: str,
+    content: str
+):
+    message_exist = logic.get_one_message(message_id)
+    if not message_exist:
+        return user_errors.NotFoundError(obj=f"Messages")
+    return logic.update_messages(message_id, content)
