@@ -33,3 +33,8 @@ class CreateGroupResponseSchema(BaseModel):
     unreadCount: int = 0
     user_created: str
     created_at: datetime
+
+
+class UpdateGroupSchema(BaseModel):
+    group_name: str
+    avatar: Optional[str] = None

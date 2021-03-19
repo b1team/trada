@@ -28,14 +28,15 @@ def create_group(group_new: schemas.CreateGroupSchema):
     return Group.to_dict()
 
 
-@router.put("/groups", tags=["groups"])
-def update_group():
-    group_name = "vuonglv" #thay = id sau :v
-    avatar = "https://defaultavatr.com"
-    group_update = group.update_group(group_name, avatar)
+@router.put("/groups", response_model=None)
+def update_group(new_update: schemas.UpdateGroupSchema):
+    if (new_update.group_name or new_update.avatar) is None:
+        raise HTTPException(status_code=404, detail="Please enter details of new group")
+    group_update = group.update_group(
+        new_update.group_name, 
+        new_update.avatar)
     if group_update:
-        return {"success": True}
-
+        return {f"Group {new_update.group_name} has been updated."}
     return {"success": False}
 
 
