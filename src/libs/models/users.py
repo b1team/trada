@@ -1,9 +1,6 @@
 import datetime
-from mongoengine import (
-    Document,
-    StringField,
-    DateTimeField,
-)
+
+from mongoengine import DateTimeField, Document, StringField
 
 
 class User(Document):

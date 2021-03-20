@@ -1,9 +1,8 @@
 from typing import Optional
+
+from src.api.exceptions import internal_errors, user_errors
+
 from . import logic
-from src.api.exceptions import (
-    user_errors,
-    internal_errors
-    )
 
 
 def create_user(

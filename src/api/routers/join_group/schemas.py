@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-
 class JoinGroupSchema(BaseModel):
     member_name: str
     group_name: str

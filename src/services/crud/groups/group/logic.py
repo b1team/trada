@@ -1,9 +1,7 @@
-from src.libs.models.groups import Groups
-
 from typing import Optional
 
 from bson import ObjectId
-
+from src.libs.models.groups import Groups
 
 
 def check_group_exists(group_id):
@@ -18,14 +16,10 @@ def get_group(group_name: str):
     return Groups.objects(group_name=group_name).first()
 
 
-def save_group(
-    group_name: str,
-    username:str
-):
+def save_group(group_name: str, username: str):
     group = Groups(group_name=group_name, user_created=username)
 
     return group.save()
-
 
 
 def get_group_profile(group_name):
@@ -34,10 +28,7 @@ def get_group_profile(group_name):
     return group.to_json()
 
 
-def update_group_profile(
-    group_name: str,
-    group_avatar: Optional[str] = None
-):
+def update_group_profile(group_name: str, group_avatar: Optional[str] = None):
     group = Groups.objects(group_name=group_name)
     fileds = {
         "group_avatar": group_avatar,

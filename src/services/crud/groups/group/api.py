@@ -1,13 +1,12 @@
-from . import logic
-from src.api.exceptions import user_errors
-from src.services.crud.users.logic import get_user
 from typing import Optional
 
+from src.api.exceptions import user_errors
+from src.services.crud.users.logic import get_user
 
-def create_group(
-    group_name:str,
-    user_created:str
-):
+from . import logic
+
+
+def create_group(group_name: str, user_created: str):
     group_exist = logic.get_group(group_name)
     user_exist = get_user(user_created)
     if group_exist:
@@ -24,10 +23,7 @@ def get_group(group_name: str):
     return logic.get_group(group_name)
 
 
-def update_group(
-    group_name: str,
-    group_avatar: Optional[str] = None
-):
+def update_group(group_name: str, group_avatar: Optional[str] = None):
     group_exist = logic.get_group(group_name)
     if not group_exist:
         raise user_errors.NotFoundError(obj=f"Group {group_name}")

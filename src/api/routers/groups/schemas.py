@@ -1,10 +1,8 @@
-from re import S
-from pydantic import BaseModel
-from typing import (
-    Dict,
-    Optional,
-    List)
 from datetime import date, datetime
+from re import S
+from typing import Dict, List, Optional
+
+from pydantic import BaseModel
 
 
 class CreateGroupSchema(BaseModel):
@@ -28,7 +26,7 @@ class Members(BaseModel):
 
 class CreateGroupResponseSchema(BaseModel):
     group_id: str
-    group_name: str 
+    group_name: str
     group_avatar: Optional[str] = None
     unreadCount: int = 0
     user_created: str

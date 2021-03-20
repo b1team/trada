@@ -1,10 +1,6 @@
-from mongoengine import(
-    Document,
-    StringField,
-    BooleanField
-)
 from datetime import datetime
 
+from mongoengine import BooleanField, Document, StringField
 from mongoengine.fields import DateTimeField
 
 

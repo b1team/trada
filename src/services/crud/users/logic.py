@@ -1,6 +1,7 @@
 from typing import Optional
-from src.libs.models.users import User
+
 from bson import ObjectId
+from src.libs.models.users import User
 
 
 def check_user_exist(user_id):
@@ -33,7 +34,8 @@ def get_user_profile(username):
 def update_current_user(
     username: str,
     avatar: Optional[str] = None,
-    name: Optional[str] = None,):
+    name: Optional[str] = None,
+):
     user = User.objects(username=username)
     fileds = {
         "avatar": avatar,

@@ -3,9 +3,9 @@ from typing import Optional
 
 
 class MessagesSaveSchema(BaseModel):
-    content : str
+    content: str
     sender_id: str
-    reciver_id:Optional[str] = None
+    receiver_id: Optional[str] = None
 
 
 class MessagesSaveResponeSchema(BaseModel):
@@ -20,19 +20,23 @@ class MessagesSaveResponeSchema(BaseModel):
 
 class MessagesUpdateSchema(BaseModel):
     message_id: str
-    content : str
+    content: str
 
 
 class MessagesGetSchema(BaseModel):
-    sendername: Optional[str] = None
-    recivedname: Optional[str] = None
+    sender_id: str
+    receiver_id: str
 
 
 class MessagesGetResponeSchema(BaseModel):
     message_id: str
     content: str
-    senderId: str
-    sendername: str
-    recivedname: str
-    date: str
-    timestamp: str
+    sender_id: str
+    receiver_id: str
+    created_at: str
+    updated_at: str
+    seen: bool
+
+
+class BasicResponse(BaseModel):
+    success: bool

@@ -1,13 +1,7 @@
 import datetime
-from mongoengine import(
-    StringField,
-    URLField,
-    DictField,
-    IntField,
-    ListField,
-    DateTimeField,
-    Document
-)
+
+from mongoengine import (DateTimeField, DictField, Document, IntField,
+                         ListField, StringField, URLField)
 
 
 class Groups(Document):

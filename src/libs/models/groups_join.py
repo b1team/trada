@@ -1,10 +1,6 @@
 from datetime import datetime
-from mongoengine import (
-    Document,
-    StringField,
-    DateTimeField,
-    BooleanField
-)
+
+from mongoengine import BooleanField, DateTimeField, Document, StringField
 
 
 class Group_members(Document):
@@ -12,7 +8,7 @@ class Group_members(Document):
     group_name = StringField(default="")
     join_at = DateTimeField(default=datetime.utcnow)
     left_at = DateTimeField(default=None)
-    left =  BooleanField(default=False)
+    left = BooleanField(default=False)
 
     def to_dict(self):
         return {

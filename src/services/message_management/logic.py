@@ -1,24 +1,21 @@
-from src.services.crud.messages.message import save_message
-from ..crud.groups.group_join.models import Group_members
-#from src.libs.models.groups_join import Group_members
 from typing import Optional
 
-def send_private(
-    content: str,
-    sender_id: Optional[str] = None,
-    receiver_id: Optional[str] = None
-):
+from src.libs.models.groups_join import Group_members
+from src.services.crud.messages.message import save_message
+
+
+def send_private(content: str,
+                 sender_id: Optional[str] = None,
+                 receiver_id: Optional[str] = None):
     message = save_message(content, sender_id, receiver_id)
 
     return message
 
 
-def send_group(
-    content: str,
-    senderId: Optional[str] = None,
-    sendername: Optional[str] = None,
-    recivedname: Optional[str] = None
-):
+def send_group(content: str,
+               senderId: Optional[str] = None,
+               sendername: Optional[str] = None,
+               recivedname: Optional[str] = None):
     members = Group_members.objects(group_name=recivedname, left=False)
     list_members = []
     for member in members:
