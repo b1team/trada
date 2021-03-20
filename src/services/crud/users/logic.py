@@ -17,11 +17,9 @@ def get_user(username: str):
 
 def save_user(
     username: str,
-    password: str,
-    name: Optional[str] = None,
-    avatar: Optional[str] = None,
+    password: str
 ):
-    user = User(username=username, password=password, name=name, avatar=avatar)
+    user = User(username=username, password=password)
     return user.save()
 
 

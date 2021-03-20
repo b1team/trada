@@ -20,7 +20,7 @@ def get_all_messages(
     sender_id: str,
     receiver_id: str,
 ):
-    messages = Messages.objects(sendername=sender_id, recivedname=receiver_id)
+    messages = Messages.objects(sender_id=sender_id, receiver_id=receiver_id)
 
     list_messages = []
     for message in messages:

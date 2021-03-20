@@ -3,7 +3,7 @@ from src.services import message_management as send
 
 from . import schemas
 
-router = APIRouter(prefix="/message_management", tags=["message_management"])
+router = APIRouter(prefix="/message_management", tags=["send_message"])
 
 
 @router.post("/send_message",

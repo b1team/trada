@@ -22,14 +22,15 @@ def update_message(message_update: schemas.MessagesUpdateSchema):
 
     if update_message:
         return {"success": True}
+
     return {"success": False}
 
 
 @router.delete("/messages/{message_id}", response_model=schemas.BasicResponse)
-def delete_message(message_id):
-    if message_id is None:
+def delete_message(message_id: str):
+    if message_id.strip() == "":
         raise HTTPException(status_code=404,
-                            detail="Please enter a message id")
+                            detail="message_id must not be space")
     delete_mess = message.delete(message_id)
 
     if delete_mess:
@@ -38,9 +39,10 @@ def delete_message(message_id):
     return {"success": False}
 
 
-@router.get("/messages/{sender_id}",
-            response_model=schemas.MessagesSaveResponeSchema)
+@router.get("/messages/{sender_id}", response_model=None)
 def get_messages(sender_id: str, receiver_id: str):
+    if sender_id.strip() == "" or receiver_id.strip() == "":
+        raise HTTPException(status_code=404, detail="id must not be space")
     _messages = message.messages_get(
         sender_id,
         receiver_id,

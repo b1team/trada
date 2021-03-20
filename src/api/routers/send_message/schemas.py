@@ -13,6 +13,18 @@ class MessagesSendSchema(BaseModel):
             raise ValueError("content must not be empty")
         return value
 
+    @validator("sender_id")
+    def sender_id_validator(cls, value):
+        if not value.strip():
+            raise ValueError("sender_id must not be empty")
+        return value
+
+    @validator("receiver_id")
+    def receiver_id_validator(cls, value):
+        if not value.strip():
+            raise ValueError("receiver_id must not be empty")
+        return value
+
 
 class MessagesSendResponseSchema(BaseModel):
     message_id: Optional[str] = None
@@ -21,3 +33,4 @@ class MessagesSendResponseSchema(BaseModel):
     receiver_id: Optional[str] = None
     created_at: str
     seen: bool
+    active: bool

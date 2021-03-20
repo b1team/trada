@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from mongoengine import BooleanField, Document, StringField
-from mongoengine.fields import DateTimeField
+from mongoengine import BooleanField, Document, StringField, DateTimeField
 
 
 class Messages(Document):
@@ -11,6 +10,7 @@ class Messages(Document):
     created_at = DateTimeField(default=datetime.utcnow())
     updated_at = DateTimeField(default=datetime.utcnow())
     seen = BooleanField(default=False)
+    active = BooleanField(default=True)
 
     def to_dict(self):
         return {
@@ -21,4 +21,5 @@ class Messages(Document):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
             "seen": self.seen,
+            "active": self.active,
         }

@@ -1,6 +1,6 @@
 import datetime
 
-from mongoengine import DateTimeField, Document, StringField
+from mongoengine import DateTimeField, Document, StringField, BooleanField
 
 
 class User(Document):
@@ -8,6 +8,7 @@ class User(Document):
     password = StringField(required=True)
     name = StringField(default="")
     avatar = StringField(default="https://www.default.com/")
+    active = BooleanField(default=True)
     created_at = DateTimeField(default=datetime.datetime.utcnow)
 
     def to_dict(self):
@@ -17,5 +18,6 @@ class User(Document):
             "avatar": self.avatar,
             "password": self.password,
             "name": self.name,
+            "active": self.active,
             "created_at": self.created_at,
         }
