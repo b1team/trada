@@ -4,7 +4,7 @@ from src.services.crud.messages import message
 
 from . import schemas
 
-router = APIRouter(prefix="/messages", tags=["messages"])
+router = APIRouter(tags=["messages"])
 
 
 @router.post("/messages", response_model=schemas.MessagesSaveResponeSchema)
