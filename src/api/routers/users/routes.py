@@ -4,7 +4,7 @@ from src.services.crud import users
 
 from . import schemas
 
-router = APIRouter(prefix="/users", tags=["user"])
+router = APIRouter(tags=["user"])
 
 
 @router.get("/users/{username}",
