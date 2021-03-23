@@ -16,7 +16,6 @@ class User(Document):
             "user_id": str(self.id),
             "username": self.username,
             "avatar": self.avatar,
-            "password": self.password,
             "name": self.name,
             "active": self.active,
             "created_at": self.created_at,
