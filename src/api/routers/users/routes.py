@@ -21,7 +21,8 @@ def get_user_profile(username: str):
 @router.post("/users", response_model=schemas.CreateUserResponseSchema)
 def create_user(user: schemas.CreateUserSchema):
     new_user = users.create_user(username=user.username,
-                                 password=user.password)
+                                 password=user.password,
+                                 name=user.name)
 
     return new_user.to_dict()
 
