@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
-from src.services.crud.messages import message
+from src.services.crud import messages as message
 from typing import Optional
 from . import schemas
 

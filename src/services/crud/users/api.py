@@ -7,12 +7,13 @@ from . import logic
 
 def create_user(
     username: str,
-    password: str
+    password: str,
+    name: str,
 ):
     existing_user = logic.get_user(username)
     if existing_user:
         raise user_errors.ExistingError(obj=f"User {username}")
-    return logic.save_user(username, password)
+    return logic.save_user(username, password, name=name)
 
 
 def get_user(username: str):
