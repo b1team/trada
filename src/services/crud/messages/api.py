@@ -1,42 +1,43 @@
 from typing import Optional
 
-from src.api.exceptions import user_errors, internal_errors
+from src.api.exceptions import user_errors, internal_errors, room_errors
 from src.services.crud.users.logic import check_user_exist
+from src.services.crud.room.logic import check_room_exists, check_room_exists
 
 from . import logic
 
 
 def save_message(content: str,
-                 sender_id: str,
-                 receiver_id: Optional[str] = None):
+                 sender_id: Optional[str] = None,
+                 room_id: Optional[str] = None):
     try:
         sender_exist = check_user_exist(sender_id)
     except:
-        raise user_errors.UserError(detail=f"Invalid sender_id: {sender_id}")
+        raise user_errors.IdFormatError()
 
     try:
-        receiver_exist = check_user_exist(receiver_id)
+        room_exist = check_room_exists(room_id)
     except:
-        raise user_errors.UserError(detail=f"Invalid receiver_id: {receiver_id}")
+        raise room_errors.IdFormatError()
 
-    return logic.save_messages(content, sender_id, receiver_id)
+    return logic.save_messages(content, sender_id, room_id)
 
 
 def messages_get(sender_id: Optional[str] = None,
-                 receiver_id: Optional[str] = None,
+                 room_id: Optional[str] = None,
                  start_time: Optional[str] = None,
                  end_time: Optional[str] = None):
     try:
         sender_exist = check_user_exist(sender_id)
     except:
-        raise user_errors.UserError(detail=f"Invalid sender_id: {sender_id}")
+        raise user_errors.IdFormatError()
 
     try:
-        receiver_exist = check_user_exist(receiver_id)
+        receiver_exist = check_room_exists(room_id)
     except:
-        raise user_errors.UserError(detail=f"Invalid receiver_id: {receiver_id}")
+        raise user_errors.IdFormatError()
 
-    return logic.get_all_messages(sender_id, receiver_id, start_time, end_time)
+    return logic.get_all_messages(sender_id, room_id, start_time, end_time)
 
 
 def delete(message_id: str):

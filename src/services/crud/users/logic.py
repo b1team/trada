@@ -4,7 +4,7 @@ from bson import ObjectId
 from src.libs.models.users import User
 
 
-def check_user_exist(user_id):
+def check_user_exist(user_id:str):
     user = User.objects(id=ObjectId(user_id)).first()
     if user:
         return True
@@ -34,7 +34,7 @@ def save_user(
     return user.save()
 
 
-def get_user_profile(username):
+def get_user_profile(username: str):
     user = User.objects(username=username).first()
 
     return user.to_json()
@@ -55,7 +55,7 @@ def update_current_user(
     return True
 
 
-def remove_user(username):
+def remove_user(username: str):
     user = User.objects(username=username)
     user.delete()
 

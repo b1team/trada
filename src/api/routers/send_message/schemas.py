@@ -4,8 +4,8 @@ from typing import Optional
 
 class MessagesSendSchema(BaseModel):
     content : str
-    sender_id: str
-    receiver_id: str
+    sender_id: Optional[str] = None
+    room_id: Optional[str] = None
 
     @validator("content")
     def content_validator(cls, value):
@@ -19,10 +19,10 @@ class MessagesSendSchema(BaseModel):
             raise ValueError("sender_id must not be empty")
         return value
 
-    @validator("receiver_id")
+    @validator("room_id")
     def receiver_id_validator(cls, value):
         if not value.strip():
-            raise ValueError("receiver_id must not be empty")
+            raise ValueError("room_id must not be empty")
         return value
 
 
@@ -30,7 +30,7 @@ class MessagesSendResponseSchema(BaseModel):
     message_id: Optional[str] = None
     content: Optional[str] = None
     sender_id: Optional[str] = None
-    receiver_id: Optional[str] = None
+    room_id: Optional[str] = None
     created_at: str
     seen: bool
     active: bool

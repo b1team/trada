@@ -11,7 +11,7 @@ router = APIRouter(tags=["user"])
             response_model=schemas.UserProfileResponseSchema)
 def get_user_profile(username: str):
     if username.strip() == "":
-        raise HTTPException(status_code=404,
+        raise HTTPException(status_code=411,
                             detail="Username must not be space")
     user = users.get_user(username)
 
@@ -31,7 +31,7 @@ def create_user(user: schemas.CreateUserSchema):
             response_model=schemas.UpdateUserResponseSchema)
 def update_user(username: str, user: schemas.UpdateUserSchema):
     if username.strip() == "":
-        raise HTTPException(status_code=404,
+        raise HTTPException(status_code=411,
                             detail="Username must not be space")
     new_user_info = users.update_user(username, user.avatar, user.name)
     if new_user_info:
@@ -41,7 +41,7 @@ def update_user(username: str, user: schemas.UpdateUserSchema):
 @router.delete("/users/{username}", response_model=schemas.BasicResponse)
 def delete_user(username: str):
     if username.strip() == "":
-        raise HTTPException(status_code=404,
+        raise HTTPException(status_code=411,
                             detail="Username must not be space")
     user_delete = users.delete_user(username)
     if user_delete:

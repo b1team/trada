@@ -11,7 +11,7 @@ router = APIRouter(tags=["messages"])
 @router.post("/messages", response_model=schemas.MessagesSaveResponeSchema)
 def save_messages(message_new: schemas.MessagesSaveSchema):
     _message = message.save_message(message_new.content, message_new.sender_id,
-                                    message_new.receiver_id)
+                                    message_new.room_id)
 
     return _message.to_dict()
 
@@ -42,9 +42,9 @@ def delete_message(message_id: str):
 
 @router.get("/messages", response_model=None)
 def get_messages(sender_id: Optional[str] = None,
-                 receiver_id: Optional[str] = None,
+                 room_id: Optional[str] = None,
                  start_time: Optional[datetime] = None,
                  end_time: Optional[datetime] = None):
-    _messages = message.messages_get(sender_id, receiver_id, start_time,
+    _messages = message.messages_get(sender_id, room_id, start_time,
                                      end_time)
     return {"messages": _messages, "count": len(_messages)}
