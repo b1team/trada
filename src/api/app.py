@@ -4,7 +4,8 @@ from mongoengine import connect, disconnect
 from src.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import messages, send_message, users, room
+from .routers import messages, send_message, users, room, auth
+
 
 app = FastAPI()
 
@@ -12,6 +13,7 @@ app.include_router(users.router)
 app.include_router(messages.router)
 app.include_router(send_message.router)
 app.include_router(room.router)
+app.include_router(auth.router)
 
 
 @app.get("/")
