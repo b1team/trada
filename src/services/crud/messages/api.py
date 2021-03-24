@@ -6,44 +6,37 @@ from src.services.crud.users.logic import check_user_exist
 from . import logic
 
 
-def save_message(
-    content: str,
-    sender_id: str,
-    receiver_id: Optional[str] = None,
-):
+def save_message(content: str,
+                 sender_id: str,
+                 receiver_id: Optional[str] = None):
     try:
         sender_exist = check_user_exist(sender_id)
     except:
-        raise internal_errors.InternalError(detail="Incorrect id format")
-    if not sender_exist:
-        raise user_errors.NotFoundError(obj=f"User {sender_id}")
+        raise user_errors.UserError(detail=f"Invalid sender_id: {sender_id}")
 
     try:
         receiver_exist = check_user_exist(receiver_id)
     except:
-        raise internal_errors.InternalError(detail="Incorrect id format")
-    if not receiver_exist:
-        raise user_errors.NotFoundError(obj=f"Receiver {receiver_id}")
+        raise user_errors.UserError(detail=f"Invalid receiver_id: {receiver_id}")
 
     return logic.save_messages(content, sender_id, receiver_id)
 
 
-def messages_get(sender_id: str, receiver_id: str):
+def messages_get(sender_id: Optional[str] = None,
+                 receiver_id: Optional[str] = None,
+                 start_time: Optional[str] = None,
+                 end_time: Optional[str] = None):
     try:
         sender_exist = check_user_exist(sender_id)
     except:
-        raise internal_errors.InternalError(detail="Incorrect id format")
-    if not sender_exist:
-        raise user_errors.NotFoundError(obj=f"User {sender_id}")
+        raise user_errors.UserError(detail=f"Invalid sender_id: {sender_id}")
 
     try:
-        recived_exist = check_user_exist(receiver_id)
+        receiver_exist = check_user_exist(receiver_id)
     except:
-        raise internal_errors.InternalError(detail="Incorrect id format")
-    if not recived_exist:
-        raise user_errors.NotFoundError(obj=f"User {receiver_id}")
+        raise user_errors.UserError(detail=f"Invalid receiver_id: {receiver_id}")
 
-    return logic.get_all_messages(sender_id, receiver_id)
+    return logic.get_all_messages(sender_id, receiver_id, start_time, end_time)
 
 
 def delete(message_id: str):
@@ -70,4 +63,3 @@ def update(message_id: str, content: str):
             raise internal_errors.InternalError(detail="Update failed")
     else:
         return user_errors.NotFoundError(obj=f"Messages {message_id}")
-

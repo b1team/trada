@@ -1,7 +1,6 @@
-from datetime import datetime
 from typing import Optional
 
-from src.api.exceptions import user_errors, internal_errors
+from src.api.exceptions import internal_errors, user_errors
 from src.config import settings
 from src.services.crud.users.logic import check_user_exist
 

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from mongoengine import connect, disconnect
 from src.config import settings
+from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import messages, send_message, users, auth
 
@@ -26,3 +27,14 @@ def startup_event():
 @app.on_event("shutdown")
 def shutdown_event():
     disconnect()
+
+
+origins = ["http://localhost:8000"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

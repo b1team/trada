@@ -15,11 +15,22 @@ def get_user(username: str):
     return User.objects(username=username).first()
 
 
+def get_public_user_info(user_id: str):
+    user = User.objects(id=ObjectId(user_id)).first()
+    if user:
+        return {"username": user.username,
+                "name": user.name,
+                "user_id": str(user.id),
+                "avatar": user.avatar,}
+    return None
+
+
 def save_user(
     username: str,
-    password: str
+    password: str,
+    name: str
 ):
-    user = User(username=username, password=password)
+    user = User(username=username, password=password, name=name)
     return user.save()
 
 

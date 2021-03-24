@@ -1,6 +1,6 @@
 from pydantic import BaseModel, validator
 from typing import Optional
-
+from dateutil.parser import parser
 
 class MessagesSaveSchema(BaseModel):
     content: str
@@ -52,34 +52,6 @@ class MessagesUpdateSchema(BaseModel):
         if not value.strip():
             raise ValueError("message_id must not be empty")
         return value
-
-
-class MessagesGetSchema(BaseModel):
-    sender_id: str
-    receiver_id: str
-
-    @validator("sender_id")
-    def sender_id_validator(cls, value):
-        if not value.strip():
-            raise ValueError("sender_id must not be empty")
-        return value
-
-    @validator("receiver_id")
-    def receiver_id_validator(cls, value):
-        if not value.strip():
-            raise ValueError("receiver_id must not be empty")
-        return value
-
-
-class MessagesGetResponeSchema(BaseModel):
-    message_id: str
-    content: str
-    sender_id: str
-    receiver_id: str
-    created_at: str
-    updated_at: str
-    seen: bool
-    active: bool
 
 
 class BasicResponse(BaseModel):

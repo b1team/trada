@@ -1,7 +1,8 @@
+from datetime import datetime
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
-from src.services.crud.messages import message
-
+from src.services.crud import messages as message
+from typing import Optional
 from . import schemas
 
 router = APIRouter(tags=["messages"])
@@ -39,15 +40,11 @@ def delete_message(message_id: str):
     return {"success": False}
 
 
-@router.get("/messages/{sender_id}", response_model=None)
-def get_messages(sender_id: str, receiver_id: str):
-    if sender_id.strip() == "" or receiver_id.strip() == "":
-        raise HTTPException(status_code=404, detail="id must not be space")
-    _messages = message.messages_get(
-        sender_id,
-        receiver_id,
-    )
-    if _messages is not None:
-        return _messages
-
-    return {"success": False}
+@router.get("/messages", response_model=None)
+def get_messages(sender_id: Optional[str] = None,
+                 receiver_id: Optional[str] = None,
+                 start_time: Optional[datetime] = None,
+                 end_time: Optional[datetime] = None):
+    _messages = message.messages_get(sender_id, receiver_id, start_time,
+                                     end_time)
+    return {"messages": _messages, "count": len(_messages)}
