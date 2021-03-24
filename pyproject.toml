@@ -10,6 +10,7 @@ fastapi = "^0.63.0"
 uvicorn = {extras = ["standard"], version = "^0.13.3"}
 mongoengine = "^0.22.1"
 redis = "^3.5.3"
+PyJWT = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
