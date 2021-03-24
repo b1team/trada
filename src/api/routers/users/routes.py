@@ -33,7 +33,7 @@ def create_user(user: schemas.CreateUserSchema):
     auth = AuthService(settings.TOKEN_SECRET_KEY)
     hashed_password = auth.hash_password(user.password)
     new_user = users.create_user(username=user.username,
-                                 password=hashed_password)
+                                 password=hashed_password,
                                  name=user.name)
 
     return new_user.to_dict()
