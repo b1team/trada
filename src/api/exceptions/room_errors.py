@@ -3,12 +3,12 @@ from .base import BaseError
 from fastapi import status
 
 
-class UserError(BaseError):
+class RoomError(BaseError):
     status_code = status.HTTP_400_BAD_REQUEST
-    detail = "User Error"
+    detail = "Room Error"
 
 
-class NotFoundError(UserError):
+class NotFoundError(RoomError):
     status_code = status.HTTP_404_NOT_FOUND
 
     def __init__(
@@ -17,12 +17,12 @@ class NotFoundError(UserError):
         headers: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.detail = f"{obj} is not found"
-        super().__init__(
-            status_code=self.status_code, detail=self.detail, headers=headers
-        )
+        super().__init__(status_code=self.status_code,
+                         detail=self.detail,
+                         headers=headers)
 
 
-class ExistingError(UserError):
+class ExistingError(RoomError):
     status_code = status.HTTP_400_BAD_REQUEST
 
     def __init__(
@@ -31,21 +31,21 @@ class ExistingError(UserError):
         headers: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.detail = f"{obj} is already existing"
-        super().__init__(
-            status_code=self.status_code, detail=self.detail, headers=headers
-        )
+        super().__init__(status_code=self.status_code,
+                         detail=self.detail,
+                         headers=headers)
 
 
-class UnAuthorizedError(UserError):
+class UnAuthorizedError(RoomError):
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Unauthorized"
 
 
-class MissingPermissionError(UserError):
+class MissingPermissionError(RoomError):
     status_code = status.HTTP_403_FORBIDDEN
     detail = "Permission Denied"
 
 
-class IdFormatError(UserError):
+class IdFormatError(RoomError):
     status_code = status.HTTP_406_NOT_ACCEPTABLE
     detail = "Format id not acceptable"

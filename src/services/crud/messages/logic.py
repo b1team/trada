@@ -6,25 +6,25 @@ from src.services.crud.users.logic import get_public_user_info
 
 
 def save_messages(content: str,
-                  sender_id: str,
-                  receiver_id: Optional[str] = None):
+                  sender_id: Optional[str] = None,
+                  room_id: Optional[str] = None):
     new_message = Messages(content=content,
                            sender_id=sender_id,
-                           receiver_id=receiver_id)
+                           room_id=room_id)
 
     return new_message.save()
 
 
 def get_all_messages(sender_id: Optional[str] = None,
-                     receiver_id: Optional[str] = None,
+                     room_id: Optional[str] = None,
                      start_time: Optional[datetime] = None,
                      end_time: Optional[datetime] = None):
     filters = dict()
 
     if sender_id:
         filters.update({"sender_id": sender_id})
-    if receiver_id:
-        filters.update({"receiver_id": receiver_id})
+    if room_id:
+        filters.update({"room_id": room_id})
     if start_time:
         filters.update({"created_at__gte": start_time})
     if end_time:
@@ -38,14 +38,14 @@ def get_all_messages(sender_id: Optional[str] = None,
         if message.sender_id not in _users:
             _users[message.sender_id] = get_public_user_info(message.sender_id)
 
-        if message.receiver_id not in _users:
-            _users[message.receiver_id] = get_public_user_info(message.receiver_id)
+        if message.room_id not in _users:
+            _users[message.room_id] = get_public_user_info(message.room_id)
 
         data = message.to_dict()
         data["sender"] = _users.get(message.sender_id)
-        data["receiver"] = _users.get(message.receiver_id)
+        data["room"] = _users.get(message.room_id)
         data.pop("sender_id")
-        data.pop("receiver_id")
+        data.pop("room_id")
 
         list_messages.append(data)
 

@@ -6,7 +6,7 @@ from mongoengine import BooleanField, Document, StringField, DateTimeField
 class Messages(Document):
     content = StringField()
     sender_id = StringField()
-    receiver_id = StringField()
+    room_id = StringField()
     created_at = DateTimeField(default=datetime.utcnow())
     updated_at = DateTimeField(default=datetime.utcnow())
     seen = BooleanField(default=False)
@@ -17,7 +17,7 @@ class Messages(Document):
             "message_id": str(self.id),
             "content": self.content,
             "sender_id": self.sender_id,
-            "receiver_id": self.receiver_id,
+            "room_id": self.room_id,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
             "seen": self.seen,
