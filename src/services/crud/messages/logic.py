@@ -29,6 +29,7 @@ def get_all_messages(sender_id: Optional[str] = None,
         filters.update({"created_at__gte": start_time})
     if end_time:
         filters.update({"created_at__lte": end_time})
+    filters.update({"active": True})
 
     messages = Messages.objects(**filters)
     list_messages = []
@@ -72,3 +73,18 @@ def delete_messages(message_id: str):
     messages.delete()
 
     return True
+
+
+def get_user_id_by_message(message_id: str):
+    return Messages.objects(id=ObjectId(message_id)).first().sender_id
+
+
+def get_last_message(room_id: str):
+    message = Messages.objects(room_id=room_id).order_by('-created_at').first()
+    if message:
+        return message.to_dict()
+    return False
+
+
+def get_unread_messages(room_id: str):
+    return Messages.objects(room_id=room_id, seen=False)

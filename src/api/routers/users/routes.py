@@ -1,31 +1,31 @@
-from src.api.depends.auth import get_current_user
-from fastapi.param_functions import Depends
-from src.libs.models.users import User
-from src.config import settings
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
-from src.services.crud import users
+from fastapi.param_functions import Depends
+from src.api.depends.auth import get_current_user
+from src.config import settings
+from src.libs.models.users import User
 from src.services.auth import AuthService
+from src.services.crud import users
 
 from . import schemas
 
 router = APIRouter(tags=["user"])
 
 
-@router.get("/users/me",
-            response_model=schemas.UserProfileResponseSchema)
+@router.get("/users/me", response_model=schemas.UserProfileResponseSchema)
 def get_me(user: User = Depends(get_current_user)):
     return user.to_dict()
 
+
 @router.get("/users/{username}",
             response_model=schemas.UserProfileResponseSchema)
-def get_user_profile(username: str):
+def get_user_profile(username: str, user: User = Depends(get_current_user)):
     if username.strip() == "":
         raise HTTPException(status_code=411,
                             detail="Username must not be space")
-    user = users.get_user(username)
+    _user = users.get_user(username)
 
-    return user.to_dict()
+    return _user.to_dict()
 
 
 @router.post("/users", response_model=schemas.CreateUserResponseSchema)
@@ -41,20 +41,26 @@ def create_user(user: schemas.CreateUserSchema):
 
 @router.put("/users/{username}",
             response_model=schemas.UpdateUserResponseSchema)
-def update_user(username: str, user: schemas.UpdateUserSchema):
+def update_user(username: str,
+                user: schemas.UpdateUserSchema,
+                auth_user: User = Depends(get_current_user)):
     if username.strip() == "":
         raise HTTPException(status_code=411,
                             detail="Username must not be space")
+    if auth_user.username != username:
+        raise HTTPException(status_code=403, detail="Permission denied")
     new_user_info = users.update_user(username, user.avatar, user.name)
     if new_user_info:
         return user
 
 
 @router.delete("/users/{username}", response_model=schemas.BasicResponse)
-def delete_user(username: str):
+def delete_user(username: str, auth_user: User = Depends(get_current_user)):
     if username.strip() == "":
         raise HTTPException(status_code=411,
                             detail="Username must not be space")
+    if auth_user.username != username:
+        raise HTTPException(status_code=403, detail="Permission denied")
     user_delete = users.delete_user(username)
     if user_delete:
         return {"success": True}

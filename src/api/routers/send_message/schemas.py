@@ -4,7 +4,6 @@ from typing import Optional
 
 class MessagesSendSchema(BaseModel):
     content : str
-    sender_id: Optional[str] = None
     room_id: Optional[str] = None
 
     @validator("content")
@@ -13,11 +12,6 @@ class MessagesSendSchema(BaseModel):
             raise ValueError("content must not be empty")
         return value
 
-    @validator("sender_id")
-    def sender_id_validator(cls, value):
-        if not value.strip():
-            raise ValueError("sender_id must not be empty")
-        return value
 
     @validator("room_id")
     def receiver_id_validator(cls, value):

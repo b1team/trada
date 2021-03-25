@@ -1,17 +1,19 @@
 from . import logic
 from src.api.exceptions import room_errors
+from src.services.crud.users.logic import get_user_by_id
 
 
 def create_room(room_name: str, user_id: str):
-    if logic.check_room_exists(room_name):
+    if logic.get_room(room_name):
         raise room_errors.ExistingError(obj=f"Room {room_name}")
-
-    room = logic.create_room(room_name)
-    owner = logic.invite_member(room.room_id, user_id, is_owner=True)
+    user = get_user_by_id(user_id)
+    avatar = user.avatar
+    room = logic.create_room(room_name, avatar)
+    owner = logic.invite_member(room.id, user_id, is_owner=True)
 
     data = {
         "room": room.to_dict(),
-        "owner": owner.to_dict()
+        "owner": user.to_dict(),
     }
 
     return data
@@ -41,3 +43,12 @@ def delete_room(room_id: str):
 
 def delete_member(room_id: str, member_id: str):
     return logic.remove_member(room_id, member_id)
+
+
+def get_rooms(user_id: str):
+    try:
+        rooms = logic.get_user_room(user_id)
+    except:
+        raise room_errors.IdFormatError()
+
+    return rooms
