@@ -24,18 +24,20 @@ def get_user(username: str):
         raise user_errors.NotFoundError(obj=f"User {username}")
 
 
-def update_user(username: str,
+def update_user(user_id: str,
+                username: str,
                 avatar: Optional[str] = None,
                 name: Optional[str] = None):
-    existing_user = logic.get_user(username)
+    existing_user = logic.get_user_by_id(user_id)
     if existing_user:
         try:
-            user_update = logic.update_current_user(username, avatar, name)
+            user_update = logic.update_current_user(user_id, username, avatar,
+                                                    name)
         except:
             raise internal_errors.InternalError(detail="Could not update user")
         return user_update
     else:
-        raise user_errors.NotFoundError(obj=f"User {username}")
+        raise user_errors.NotFoundError(obj=f"User {user_id}")
 
 
 def delete_user(username: str):

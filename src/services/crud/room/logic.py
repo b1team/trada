@@ -1,6 +1,7 @@
 from src.libs.models.room_member import RoomMember
 from src.libs.models.room import Room
 from src.services.crud.messages import logic
+from src.services.crud.users import logic as user_logic
 from bson import ObjectId
 from typing import Optional
 from dateutil.parser import parse
@@ -31,14 +32,15 @@ def create_room(room_name: str, avatar: str):
 
 
 def invite_member(room_id: str,
-                  member_id: str,
+                  member_name: str,
                   is_owner: Optional[bool] = False):
     filters = dict()
 
     if room_id:
         filters.update({'room_id': str(room_id)})
-    if member_id:
-        filters.update({'member_id': member_id})
+    if member_name:
+        member_id = user_logic.get_user_id(member_name)
+        filters.update({'member_id': str(member_id)})
     if is_owner:
         filters.update({'is_owner': is_owner})
 
@@ -54,8 +56,9 @@ def remove_room(room_id: str):
     return True
 
 
-def remove_member(room_id: str, member_id: str):
-    member = RoomMember.objects(room_id=room_id, member_id=member_id).first()
+def remove_member(room_id: str, member_name: str):
+    user = user_logic.get_user(member_name)
+    member = RoomMember.objects(room_id=room_id, member_id=str(user.id)).first()
     member.delete()
 
     return True
@@ -71,7 +74,9 @@ def room_members(room_id: str):
 
 
 def check_owner(room_id: str, member_id: str):
-    owner = Room.objects(room_id=room_id, member_id=member_id).first()
+    owner = RoomMember.objects(room_id=room_id, member_id=member_id).first()
+    if not owner:
+        return
     if owner.is_owner:
         return True
 
@@ -87,11 +92,26 @@ def get_user_room(user_id: str):
         room = Room.objects(id=ObjectId(info.room_id)).first()
         data = room.to_dict()
         last_message = logic.get_last_message(info.room_id)
-        if last_message:
+        try:
             last_message['timestamp'] = parse(
-                last_message.created_at).strftime('%d %b,%Y %H:%M')
+                last_message['created_at']).strftime('%d %b,%Y %H:%M')
+        except:
+            pass
         data['last_message'] = last_message
         data['unreadCount'] = len(logic.get_unread_messages(info.room_id))
         list_rooms.append(data)
 
     return list_rooms
+
+
+def get_room_info(room_id: str):
+    room = Room.objects(id=ObjectId(room_id)).first()
+    if room:
+        return {
+            "id": str(room.id),
+            "type": room.type,
+            "room_name": room.room_name,
+            "display_name": room.display_name,
+            "avatar": room.avatar,
+        }
+    return None

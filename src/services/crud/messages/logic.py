@@ -3,6 +3,7 @@ from typing import Optional
 from bson import ObjectId
 from src.libs.models.message import Messages
 from src.services.crud.users.logic import get_public_user_info
+from src.services.crud.room import logic
 
 
 def save_messages(content: str,
@@ -40,7 +41,7 @@ def get_all_messages(sender_id: Optional[str] = None,
             _users[message.sender_id] = get_public_user_info(message.sender_id)
 
         if message.room_id not in _users:
-            _users[message.room_id] = get_public_user_info(message.room_id)
+            _users[message.room_id] = logic.get_room_info(message.room_id)
 
         data = message.to_dict()
         data["sender"] = _users.get(message.sender_id)
@@ -57,20 +58,23 @@ def get_one_message(message_id: str):
     return Messages.objects(id=ObjectId(message_id)).first()
 
 
-def update_messages(message_id: str, content: str):
+def update_messages(message_id: str, user_id: str, content: str):
     message = Messages.objects(id=ObjectId(message_id))
+    if message.first().sender_id != user_id:
+        return
     filed = {
         "content": content,
     }
-
     message.update(**filed)
 
     return True
 
 
-def delete_messages(message_id: str):
-    messages = Messages.objects(id=ObjectId(message_id))
-    messages.delete()
+def delete_messages(message_id: str, user_id: str):
+    message = Messages.objects(id=ObjectId(message_id))
+    if message.first().sender_id != user_id:
+        return
+    message.update(active=False)
 
     return True
 
@@ -83,7 +87,7 @@ def get_last_message(room_id: str):
     message = Messages.objects(room_id=room_id).order_by('-created_at').first()
     if message:
         return message.to_dict()
-    return False
+    return {}
 
 
 def get_unread_messages(room_id: str):

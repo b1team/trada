@@ -10,7 +10,7 @@ from src.services.crud.users.logic import get_user
 
 async def get_token_payload(bearer_token: str = Header(None, alias="Authorization")
 ) -> Dict[str, Any]:
-    return {"user_id": "605b624412d88ba02b8caacd", "username": "dinhngoc"}
+    return {"user_id": "605cad8cfb8b0bedc1aeb57c", "username": "tungnt"}
 
     if not bearer_token.startswith("Bearer "):
         raise UnauthenticatedError("Header token missing Bearer")

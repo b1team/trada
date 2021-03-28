@@ -44,11 +44,13 @@ class BasicResponse(BaseModel):
     success: bool = True
 
 class UpdateUserSchema(BaseModel):
+    username: Optional[str] = None
     name: Optional[str] = None
     avatar: Optional[str] = None
 
 
 class UpdateUserResponseSchema(BaseModel):
+    username: Optional[str] = None
     name: Optional[str] = None
     avatar: Optional[str] = None
 

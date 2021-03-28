@@ -31,6 +31,7 @@ def update_message(message_update: schemas.MessagesUpdateSchema,
             message_update.message_id):
         raise HTTPException(status_code=403, detail='Permission denied')
     update_message = message.update(message_update.message_id,
+                                    str(auth_user.id),
                                     message_update.content)
 
     if update_message:
@@ -47,7 +48,7 @@ def delete_message(message_id: str,
                             detail="message_id must not be space")
     if str(auth_user.id) != message_logic.get_user_id_by_message(message_id):
         raise HTTPException(status_code=403, detail='Permission denied')
-    delete_mess = message.delete(message_id)
+    delete_mess = message.delete(message_id, str(auth_user.id))
 
     if delete_mess:
         return {"success": True}

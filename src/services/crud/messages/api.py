@@ -40,9 +40,9 @@ def messages_get(sender_id: Optional[str] = None,
     return logic.get_all_messages(sender_id, room_id, start_time, end_time)
 
 
-def delete(message_id: str):
+def delete(message_id: str, user_id: str):
     try:
-        del_message = logic.delete_messages(message_id)
+        del_message = logic.delete_messages(message_id, user_id)
     except:
         raise internal_errors.InternalError(detail="incorrect id format")
 
@@ -51,7 +51,7 @@ def delete(message_id: str):
     return del_message
 
 
-def update(message_id: str, content: str):
+def update(message_id: str, user_id: str,content: str):
     try:
         message_exist = logic.get_one_message(message_id)
     except:
@@ -59,7 +59,7 @@ def update(message_id: str, content: str):
 
     if message_exist:
         try:
-            return logic.update_messages(message_id, content)
+            return logic.update_messages(message_id, user_id,content)
         except:
             raise internal_errors.InternalError(detail="Update failed")
     else:

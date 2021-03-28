@@ -39,17 +39,11 @@ def create_user(user: schemas.CreateUserSchema):
     return new_user.to_dict()
 
 
-@router.put("/users/{username}",
-            response_model=schemas.UpdateUserResponseSchema)
-def update_user(username: str,
-                user: schemas.UpdateUserSchema,
+@router.put("/users", response_model=schemas.UpdateUserResponseSchema)
+def update_user(user: schemas.UpdateUserSchema,
                 auth_user: User = Depends(get_current_user)):
-    if username.strip() == "":
-        raise HTTPException(status_code=411,
-                            detail="Username must not be space")
-    if auth_user.username != username:
-        raise HTTPException(status_code=403, detail="Permission denied")
-    new_user_info = users.update_user(username, user.avatar, user.name)
+    new_user_info = users.update_user(str(auth_user.id), user.username,
+                                      user.avatar, user.name)
     if new_user_info:
         return user
 

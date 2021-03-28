@@ -1,6 +1,7 @@
 from . import logic
-from src.api.exceptions import room_errors
+from src.api.exceptions import room_errors, user_errors
 from src.services.crud.users.logic import get_user_by_id
+from src.services.crud.users.logic import get_user_id
 
 
 def create_room(room_name: str, user_id: str):
@@ -19,15 +20,18 @@ def create_room(room_name: str, user_id: str):
     return data
 
 
-def invite_member(room_id: str, member_id: str):
+def invite_member(room_id: str, member_name: str):
     try:
+        member_id = get_user_id(member_name)
+        if not member_id:
+            raise user_errors.NotFoundError(obj=f"User {member_name}")
         member = logic.check_member_exists(room_id, member_id)
     except:
         raise room_errors.IdFormatError()
     if member:
-        raise room_errors.ExistingError(obj=f"Member {member_id}")
+        raise room_errors.ExistingError(obj=f"Member {member_name}")
 
-    return logic.invite_member(room_id, member_id)
+    return logic.invite_member(room_id, member_name)
 
 
 def delete_room(room_id: str):
@@ -41,8 +45,8 @@ def delete_room(room_id: str):
     return False
 
 
-def delete_member(room_id: str, member_id: str):
-    return logic.remove_member(room_id, member_id)
+def delete_member(room_id: str, member_name: str):
+    return logic.remove_member(room_id, member_name)
 
 
 def get_rooms(user_id: str):

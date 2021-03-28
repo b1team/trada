@@ -43,12 +43,14 @@ def get_user_profile(username: str):
 
 
 def update_current_user(
+    user_id: str,
     username: str,
     avatar: Optional[str] = None,
     name: Optional[str] = None,
 ):
-    user = User.objects(username=username)
+    user = User.objects(id=ObjectId(user_id))
     fileds = {
+        "username": username,
         "avatar": avatar,
         "name": name,
     }
@@ -69,4 +71,11 @@ def check_user_active(username: str):
     if active:
         return True
 
+    return False
+
+
+def get_user_id(username: str):
+    user_id =  User.objects(username=username).first().id
+    if user_id:
+        return user_id
     return False
