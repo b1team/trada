@@ -35,7 +35,7 @@ async def chat(websocket: WebSocket,
                 )
                 continue
             else:
-                await websocket.send_text(str(event))
+                await websocket.send_text(raw_event)
     except ConnectionClosed as e:
         logger.info(f"User {user_id} Disconnected")
     finally:
