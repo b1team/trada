@@ -17,6 +17,7 @@ async def get_token_payload(bearer_token: str = Header(
     if not token:
         raise UnauthenticatedError("Header token missing access_token")
     try:
+
         decoded = jwt.decode(
             token, settings.TOKEN_SECRET_KEY, algorithms=["HS256"])
     except jwt.ExpiredSignatureError as ex:
@@ -35,6 +36,7 @@ async def get_token_payload_ws(token: str = Query(...)) -> Dict[str, Any]:
         return {"success": False, "payload": {}}
     else:
         return {"success": True, "payload": decoded}
+
 
 
 async def get_current_user(

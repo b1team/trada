@@ -31,11 +31,11 @@ def shutdown_event():
     disconnect()
 
 
-origins = ["http://localhost:8000"]
+origins = ["http://localhost:8000", "http://localhost:5000"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

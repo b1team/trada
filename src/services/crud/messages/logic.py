@@ -84,7 +84,7 @@ def get_user_id_by_message(message_id: str):
 
 
 def get_last_message(room_id: str):
-    message = Messages.objects(room_id=room_id).order_by('-created_at').first()
+    message = Messages.objects(room_id=room_id, active=True).order_by('-created_at').first()
     if message:
         return message.to_dict()
     return {}

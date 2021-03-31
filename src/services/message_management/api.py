@@ -33,7 +33,7 @@ def send_message(content: str,
         except:
             raise internal_errors.InternalError(detail="Check id format")
 
-        event = {"event_type": "new_message", "message": message.to_dict()}
+        event = {"event_type": "new_message", "payload": message.to_dict()}
 
         members = room_members(room_id)
         for member in members:

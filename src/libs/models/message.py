@@ -7,8 +7,8 @@ class Messages(Document):
     content = StringField()
     sender_id = StringField()
     room_id = StringField()
-    created_at = DateTimeField(default=datetime.utcnow())
-    updated_at = DateTimeField(default=datetime.utcnow())
+    created_at = DateTimeField(default=datetime.utcnow)
+    updated_at = DateTimeField(default=datetime.utcnow)
     seen = BooleanField(default=False)
     active = BooleanField(default=True)
 

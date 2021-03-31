@@ -51,7 +51,9 @@ def invite_member(room_id: str,
 
 def remove_room(room_id: str):
     room = Room.objects(id=ObjectId(room_id)).first()
+    member = RoomMember.objects(room_id=room_id)
     room.delete()
+    member.delete()
 
     return True
 
@@ -71,6 +73,7 @@ def room_members(room_id: str):
         list_members.append(member.member_id)
 
     return list_members
+    
 
 
 def check_owner(room_id: str, member_id: str):

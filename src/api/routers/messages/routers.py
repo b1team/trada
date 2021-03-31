@@ -7,6 +7,7 @@ from fastapi.param_functions import Depends
 from src.api.depends.auth import get_current_user
 from src.libs.models.users import User
 from src.services.crud import messages as message
+from src.services.crud import room
 from src.services.crud.messages import logic as message_logic
 from src.services.crud.room import logic as room_logic
 
@@ -65,9 +66,11 @@ def get_messages_in_room(room_id: Optional[str] = None,
         raise HTTPException(status_code=404, detail="Room not found")
     if not room_logic.check_member_exists(room_id, str(auth_user.id)):
         raise HTTPException(status_code=404, detail="you not in this room")
-
-    _messages = message.messages_get(str(auth_user.id), room_id, start_time,
-                                     end_time)
+    if start_time:
+        # kiem tra thoi gian join group. lay cac message tu luc join thoi
+        pass
+    _messages = message.messages_get(room_id=room_id, start_time=start_time,
+                                     end_time=end_time)
     return {"messages": _messages, "count": len(_messages)}
 
 

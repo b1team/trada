@@ -10,7 +10,7 @@ def create_room(room_name: str, user_id: str):
     user = get_user_by_id(user_id)
     avatar = user.avatar
     room = logic.create_room(room_name, avatar)
-    owner = logic.invite_member(room.id, user_id, is_owner=True)
+    owner = logic.invite_member(room.id, user.username, is_owner=True)
 
     data = {
         "room": room.to_dict(),
@@ -43,6 +43,10 @@ def delete_room(room_id: str):
         return logic.remove_room(room_id)
 
     return False
+
+
+def get_room_members(room_id: str):
+    return logic.room_members(room_id)
 
 
 def delete_member(room_id: str, member_name: str):

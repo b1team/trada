@@ -27,10 +27,11 @@ def messages_get(sender_id: Optional[str] = None,
                  room_id: Optional[str] = None,
                  start_time: Optional[str] = None,
                  end_time: Optional[str] = None):
-    try:
-        sender_exist = check_user_exist(sender_id)
-    except:
-        raise user_errors.IdFormatError()
+    if sender_id: 
+        try:
+            sender_exist = check_user_exist(sender_id)
+        except:
+            raise user_errors.IdFormatError()
 
     try:
         receiver_exist = check_room_exists(room_id)

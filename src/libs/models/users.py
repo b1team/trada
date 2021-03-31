@@ -7,7 +7,8 @@ class User(Document):
     username = StringField(required=True, unique=True)
     password = StringField(required=True)
     name = StringField(default="")
-    avatar = StringField(default="https://www.default.com/")
+    avatar = StringField(
+        default="https://image.flaticon.com/icons/png/128/860/860784.png")
     active = BooleanField(default=True)
     created_at = DateTimeField(default=datetime.datetime.utcnow)
 
