@@ -91,4 +91,4 @@ def get_last_message(room_id: str):
 
 
 def get_unread_messages(room_id: str):
-    return Messages.objects(room_id=room_id, seen=False)
+    return Messages.objects(room_id=room_id, seen=False, active=True)

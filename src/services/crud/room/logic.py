@@ -73,7 +73,6 @@ def room_members(room_id: str):
         list_members.append(member.member_id)
 
     return list_members
-    
 
 
 def check_owner(room_id: str, member_id: str):
