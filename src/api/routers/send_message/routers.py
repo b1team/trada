@@ -18,7 +18,7 @@ def send_messages(message: schemas.MessagesSendSchema,
         raise HTTPException(status_code=404, detail="you not in this room")
 
     messages = send.send_message(message.content, str(auth_user.id),
-                                 message.room_id)
+                                 message.room_id, auth_user.username)
 
     if messages:
         return messages.to_dict()

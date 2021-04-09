@@ -8,8 +8,7 @@ def create_room(room_name: str, user_id: str):
     if logic.get_room(room_name):
         raise room_errors.ExistingError(obj=f"Room {room_name}")
     user = get_user_by_id(user_id)
-    avatar = user.avatar
-    room = logic.create_room(room_name, avatar)
+    room = logic.create_room(room_name)
     owner = logic.invite_member(room.id, user.username, is_owner=True)
 
     data = {
@@ -60,3 +59,12 @@ def get_rooms(user_id: str):
         raise room_errors.IdFormatError()
 
     return rooms
+
+
+def room_update(room_id: str, room_name: str, avatar: str):
+    try:
+        room = logic.check_room_exists(room_id)
+    except:
+        raise room_errors.IdFormatError()
+
+    return logic.update_room(room_id, room_name, avatar)

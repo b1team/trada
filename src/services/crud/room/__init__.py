@@ -4,3 +4,4 @@ from .api import delete_member
 from .api import delete_room
 from .api import get_rooms
 from .api import get_room_members
+from .api import room_update

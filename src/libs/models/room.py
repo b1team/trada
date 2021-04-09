@@ -1,4 +1,5 @@
-from mongoengine import StringField, Document
+from mongoengine import StringField, Document, DateTimeField
+from datetime import datetime
 
 
 class Room(Document):
@@ -6,6 +7,8 @@ class Room(Document):
     room_name = StringField(required=True)
     display_name = StringField(default="")
     avatar = StringField(default="")
+    created_at = DateTimeField(default=datetime.utcnow)
+    updated_at = DateTimeField(default=datetime.utcnow)
 
     def to_dict(self):
         return {
@@ -13,5 +16,7 @@ class Room(Document):
             "type": self.type,
             "room_name": self.room_name,
             "display_name": self.display_name,
-            "avatar": self.avatar
+            "avatar": self.avatar,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
         }

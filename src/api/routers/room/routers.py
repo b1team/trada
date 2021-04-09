@@ -22,7 +22,7 @@ def create_room(room_name: str, auth_user: User = Depends(get_current_user)):
 
 @router.delete("/rooms")
 def delete_room(room_id: str, auth_user: User = Depends(get_current_user)):
-    if not logic.check_owner(room_id, str(auth_user.id)):
+    if not logic.check_deleted(room_id, str(auth_user.id)):
         raise HTTPException(status_code=403, detail="Permission denied.")
     _delete_room = room.delete_room(room_id)
 
@@ -57,3 +57,19 @@ def load_rooms(auth_user: User = Depends(get_current_user)):
     rooms = room.get_rooms(str(auth_user.id))
 
     return {"rooms": rooms, "count": len(rooms)}
+
+
+@router.put("/rooms/update")
+def update_room(data: schemas.UpdateRoomSchemas,
+                auth_user: User = Depends(get_current_user)):
+    if (data.room_name.strip() or data.avatar.strip()) == "":
+        return
+    new_Room_info = room.room_update(room_id=data.room_id,
+                                     room_name=data.room_name,
+                                     avatar=data.avatar)
+    _room = {
+        "room_id": data.room_id,
+        "room_name": data.room_name,
+        "avatar": data.avatar
+    }
+    return {"room": _room}

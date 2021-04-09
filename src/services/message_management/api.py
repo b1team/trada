@@ -11,7 +11,8 @@ from .publish import publish_event
 
 def send_message(content: str,
                  sender_id: Optional[str] = None,
-                 room_id: Optional[str] = None):
+                 room_id: Optional[str] = None,
+                 username: Optional[str] = None):
     try:
         is_room = check_room_exists(room_id)
     except:
@@ -32,8 +33,9 @@ def send_message(content: str,
             message = logic.send_to_user(content, sender_id, room_id)
         except:
             raise internal_errors.InternalError(detail="Check id format")
-
-        event = {"event_type": "new_message", "payload": message.to_dict()}
+        _message = message.to_dict()
+        _message["username"] = username
+        event = {"event_type": "new_message", "payload": _message}
 
         members = room_members(room_id)
         for member in members:

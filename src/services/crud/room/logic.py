@@ -1,5 +1,6 @@
 from src.libs.models.room_member import RoomMember
 from src.libs.models.room import Room
+from src.libs.models.message import Messages
 from src.services.crud.messages import logic
 from src.services.crud.users import logic as user_logic
 from bson import ObjectId
@@ -25,8 +26,8 @@ def check_member_exists(room_id: str, member_id: str):
     return False
 
 
-def create_room(room_name: str, avatar: str):
-    room = Room(room_name=room_name, avatar=avatar)
+def create_room(room_name: str):
+    room = Room(room_name=room_name)
 
     return room.save()
 
@@ -52,8 +53,10 @@ def invite_member(room_id: str,
 def remove_room(room_id: str):
     room = Room.objects(id=ObjectId(room_id)).first()
     member = RoomMember.objects(room_id=room_id)
+    messages = Messages.objects(room_id=room_id)
     room.delete()
     member.delete()
+    messages.delete()
 
     return True
 
@@ -76,9 +79,24 @@ def room_members(room_id: str):
 
 
 def check_owner(room_id: str, member_id: str):
+    owner = RoomMember.objects(room_id=room_id, member_id=member_id)
+    if not owner:
+        return False
+    if owner.count() == 1:
+        return False
+    owner.first()
+    if owner.is_owner and (owner.member_id == member_id):
+        return False
+    if owner.is_owner or (owner.member_id == member_id):
+        return True
+
+    return False
+
+
+def check_deleted(room_id: str, member_id: str):
     owner = RoomMember.objects(room_id=room_id, member_id=member_id).first()
     if not owner:
-        return
+        return False
     if owner.is_owner:
         return True
 
@@ -117,3 +135,18 @@ def get_room_info(room_id: str):
             "avatar": room.avatar,
         }
     return None
+
+
+def update_room(room_id: str, room_name: str, avatar: str):
+    room = Room.objects(id=ObjectId(room_id))
+    name_success = Room.objects(room_name=room_name).first()
+    if name_success:
+        return False
+    filters = {
+        "room_name": room_name,
+        "avatar": avatar,
+    }
+
+    room.update(**filters)
+
+    return True
