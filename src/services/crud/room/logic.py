@@ -78,22 +78,17 @@ def room_members(room_id: str):
     return list_members
 
 
-def check_owner(room_id: str, member_id: str):
-    owner = RoomMember.objects(room_id=room_id, member_id=member_id)
+def check_is_member(room_id: str, member_id: str):
+    owner = RoomMember.objects(room_id=room_id, member_id=member_id).first()
     if not owner:
         return False
-    if owner.count() == 1:
+    if owner.is_owner:
         return False
-    owner.first()
-    if owner.is_owner and (owner.member_id == member_id):
-        return False
-    if owner.is_owner or (owner.member_id == member_id):
+    else:
         return True
 
-    return False
 
-
-def check_deleted(room_id: str, member_id: str):
+def check_is_admin(room_id: str, member_id: str):
     owner = RoomMember.objects(room_id=room_id, member_id=member_id).first()
     if not owner:
         return False

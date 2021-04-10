@@ -22,7 +22,7 @@ def create_room(room_name: str, auth_user: User = Depends(get_current_user)):
 
 @router.delete("/rooms")
 def delete_room(room_id: str, auth_user: User = Depends(get_current_user)):
-    if not logic.check_deleted(room_id, str(auth_user.id)):
+    if not logic.check_is_admin(room_id, str(auth_user.id)):
         raise HTTPException(status_code=403, detail="Permission denied.")
     _delete_room = room.delete_room(room_id)
 
@@ -42,7 +42,7 @@ def invite_member(data: schemas.BasicSchemas):
 @router.delete("/rooms/remove")
 def delete_member(data: schemas.BasicSchemas,
                   auth_user: User = Depends(get_current_user)):
-    if not logic.check_owner(data.room_id, str(auth_user.id)):
+    if not logic.check_is_admin(data.room_id, str(auth_user.id)):
         raise HTTPException(status_code=403, detail="Permission denied.")
     member = room.delete_member(room_id=data.room_id,
                                 member_name=data.member_name)
@@ -73,3 +73,16 @@ def update_room(data: schemas.UpdateRoomSchemas,
         "avatar": data.avatar
     }
     return {"room": _room}
+
+
+@router.delete("/rooms/getout")
+def getout_room(data: schemas.BasicSchemas,
+                  auth_user: User = Depends(get_current_user)):
+    if not logic.check_is_member(data.room_id, str(auth_user.id)):
+        raise HTTPException(status_code=403, detail="Permission denied.")
+    member = room.delete_member(room_id=data.room_id,
+                                member_name=data.member_name)
+
+    if member:
+        return {"success": True}
+    return {"success": False}
