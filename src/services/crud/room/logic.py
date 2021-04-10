@@ -1,6 +1,7 @@
 from src.libs.models.room_member import RoomMember
 from src.libs.models.room import Room
 from src.libs.models.message import Messages
+from src.libs.models.users import User
 from src.services.crud.messages import logic
 from src.services.crud.users import logic as user_logic
 from bson import ObjectId
@@ -145,3 +146,15 @@ def update_room(room_id: str, room_name: str, avatar: str):
     room.update(**filters)
 
     return True
+
+
+def get_members(room_id: str):
+    members_id = RoomMember.objects(room_id=room_id)
+
+    list_members = []
+    for member in members_id:
+        user = User.objects(id=ObjectId(member.member_id)).first()
+        list_members.append(user.to_dict())
+
+    return list_members
+

@@ -77,7 +77,7 @@ def update_room(data: schemas.UpdateRoomSchemas,
 
 @router.delete("/rooms/getout")
 def getout_room(data: schemas.BasicSchemas,
-                  auth_user: User = Depends(get_current_user)):
+                auth_user: User = Depends(get_current_user)):
     if not logic.check_is_member(data.room_id, str(auth_user.id)):
         raise HTTPException(status_code=403, detail="Permission denied.")
     member = room.delete_member(room_id=data.room_id,
@@ -86,3 +86,11 @@ def getout_room(data: schemas.BasicSchemas,
     if member:
         return {"success": True}
     return {"success": False}
+
+
+@router.get("/rooms/members")
+def get_members(room_id: str,
+                auth_user: User = Depends(get_current_user)):
+    members = room.members(room_id)
+
+    return {"members": members}

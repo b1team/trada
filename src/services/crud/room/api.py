@@ -68,3 +68,7 @@ def room_update(room_id: str, room_name: str, avatar: str):
         raise room_errors.IdFormatError()
 
     return logic.update_room(room_id, room_name, avatar)
+
+
+def members(room_id: str):
+    return logic.get_members(room_id)
