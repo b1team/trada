@@ -92,10 +92,9 @@ def check_is_member(room_id: str, member_id: str):
 def check_is_admin(room_id: str, member_id: str):
     owner = RoomMember.objects(room_id=room_id, member_id=member_id).first()
     if not owner:
-        return False
+        return
     if owner.is_owner:
         return True
-
     return False
 
 
@@ -154,7 +153,9 @@ def get_members(room_id: str):
     list_members = []
     for member in members_id:
         user = User.objects(id=ObjectId(member.member_id)).first()
-        list_members.append(user.to_dict())
+        _user = user.to_dict()
+        _user["is_owner"] = member.is_owner
+        list_members.append(_user)
 
     return list_members
 
