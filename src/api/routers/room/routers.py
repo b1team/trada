@@ -1,3 +1,4 @@
+from src.services.message_management.publish import publish_event
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Depends
@@ -5,6 +6,7 @@ from src.api.depends.auth import get_current_user
 from src.libs.models.users import User
 from src.services.crud import room
 from src.services.crud.room import logic
+from src.config import settings
 
 from . import schemas
 
@@ -35,7 +37,10 @@ def delete_room(room_id: str, auth_user: User = Depends(get_current_user)):
 def invite_member(data: schemas.BasicSchemas):
     member = room.invite_member(room_id=data.room_id,
                                 member_name=data.member_name)
-
+    event = {"event_type": "invite", "payload": {"room_id": data.room_id}}
+    user_id = member.member_id
+    channel = f"{user_id}_notify"
+    publish_event(redis_uri=settings.REDIS_URI, channel=channel, event=event)
     return member.to_dict()
 
 
@@ -48,6 +53,11 @@ def delete_member(data: schemas.BasicSchemas,
                                 member_name=data.member_name)
 
     if member:
+        event = {"event_type": "delete", "payload": {"room_id": data.room_id}}
+        channel = f"{member}_notify"
+        publish_event(redis_uri=settings.REDIS_URI,
+                      channel=channel,
+                      event=event)
         return {"success": True}
     return {"success": False}
 
@@ -64,9 +74,9 @@ def update_room(data: schemas.UpdateRoomSchemas,
                 auth_user: User = Depends(get_current_user)):
     if (data.room_name.strip() or data.avatar.strip()) == "":
         return
-    new_Room_info = room.room_update(room_id=data.room_id,
-                                     room_name=data.room_name,
-                                     avatar=data.avatar)
+    room.room_update(room_id=data.room_id,
+                     room_name=data.room_name,
+                     avatar=data.avatar)
     _room = {
         "room_id": data.room_id,
         "room_name": data.room_name,
@@ -89,8 +99,7 @@ def getout_room(data: schemas.BasicSchemas,
 
 
 @router.get("/rooms/members")
-def get_members(room_id: str,
-                auth_user: User = Depends(get_current_user)):
+def get_members(room_id: str, auth_user: User = Depends(get_current_user)):
     members = room.members(room_id)
 
     return {"members": members}

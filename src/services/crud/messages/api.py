@@ -11,12 +11,12 @@ def save_message(content: str,
                  sender_id: Optional[str] = None,
                  room_id: Optional[str] = None):
     try:
-        sender_exist = check_user_exist(sender_id)
+        check_user_exist(sender_id)
     except:
         raise user_errors.IdFormatError()
 
     try:
-        room_exist = check_room_exists(room_id)
+        check_room_exists(room_id)
     except:
         raise room_errors.IdFormatError()
 
@@ -29,12 +29,12 @@ def messages_get(sender_id: Optional[str] = None,
                  end_time: Optional[str] = None):
     if sender_id: 
         try:
-            sender_exist = check_user_exist(sender_id)
+            check_user_exist(sender_id)
         except:
             raise user_errors.IdFormatError()
 
     try:
-        receiver_exist = check_room_exists(room_id)
+        check_room_exists(room_id)
     except:
         raise user_errors.IdFormatError()
 

@@ -9,7 +9,7 @@ def create_room(room_name: str, user_id: str):
         raise room_errors.ExistingError(obj=f"Room {room_name}")
     user = get_user_by_id(user_id)
     room = logic.create_room(room_name)
-    owner = logic.invite_member(room.id, user.username, is_owner=True)
+    logic.invite_member(room.id, user.username, is_owner=True)
 
     data = {
         "room": room.to_dict(),
@@ -49,7 +49,12 @@ def get_room_members(room_id: str):
 
 
 def delete_member(room_id: str, member_name: str):
-    return logic.remove_member(room_id, member_name)
+    try:
+        member_remove = logic.remove_member(room_id, member_name)
+    except:
+        return False
+    else:
+        return member_remove
 
 
 def get_rooms(user_id: str):
@@ -63,7 +68,7 @@ def get_rooms(user_id: str):
 
 def room_update(room_id: str, room_name: str, avatar: str):
     try:
-        room = logic.check_room_exists(room_id)
+        logic.check_room_exists(room_id)
     except:
         raise room_errors.IdFormatError()
 

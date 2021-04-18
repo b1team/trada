@@ -44,31 +44,30 @@ async def chat(websocket: WebSocket,
 
 
 @router.websocket("/ws/notifications")
-async def ble(websocket: WebSocket,
+async def notification(websocket: WebSocket,
               user: Union[None, User] = Depends(get_current_user_ws)):
     if not user:
         return
     user_id = str(user.id)
     await websocket.accept()
     redis = await aioredis.create_redis_pool(settings.REDIS_URI)
+    response = await redis.subscribe(channel=f"{user_id}_notify")
+    channel = response[0]
     try:
-        while True:
-            raw_data = await websocket.receive_text()
+        while await channel.wait_message():
+            raw_event = await channel.get(encoding="utf8")
             try:
-                data = json.loads(raw_data)
+                event = json.loads(raw_event)
             except json.JSONDecodeError as e:
                 logger.warning(
-                    f"[{user_id}]Event '{raw_data}' was ignored. Decode failed"
+                    f"[{user_id}]Event '{raw_event}' was ignored. Decode failed"
                 )
                 continue
             else:
-                room_id = data.get("room_id")
-                event = data.get("event")
-                if not room_id:
-                    continue
-                redis.publish(channel=room_id, message=json.dumps(event))
-    except WebSocketDisconnect as e:
+                await websocket.send_text(raw_event)
+    except ConnectionClosed as e:
         logger.info(f"User {user_id} Disconnected")
     finally:
         redis.close()
         await redis.wait_closed()
+

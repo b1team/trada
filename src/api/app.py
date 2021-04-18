@@ -31,7 +31,10 @@ def shutdown_event():
     disconnect()
 
 
-origins = ["http://localhost:8000", "http://localhost:5000"]
+origins = [
+    "http://localhost:8000", "http://localhost:5000",
+    "http://192.168.248.18:8000", "http://192.168.248.18:5000"
+]
 
 app.add_middleware(
     CORSMiddleware,

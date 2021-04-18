@@ -67,7 +67,7 @@ def remove_member(room_id: str, member_name: str):
     member = RoomMember.objects(room_id=room_id, member_id=str(user.id)).first()
     member.delete()
 
-    return True
+    return str(user.id)
 
 
 def room_members(room_id: str):
@@ -134,9 +134,6 @@ def get_room_info(room_id: str):
 
 def update_room(room_id: str, room_name: str, avatar: str):
     room = Room.objects(id=ObjectId(room_id))
-    name_success = Room.objects(room_name=room_name).first()
-    if name_success:
-        return False
     filters = {
         "room_name": room_name,
         "avatar": avatar,
@@ -158,4 +155,3 @@ def get_members(room_id: str):
         list_members.append(_user)
 
     return list_members
-
