@@ -1,52 +1,17 @@
 version: "3.7"
 
 services:
-    redis:
-        image: redis:6.2.1-alpine
-        container_name: redis
-        command: ["redis-server", "--appendonly", "yes"]
-        hostname: redis
-        volumes:
-            - redis-data:/data
-        restart: unless-stopped
-        networks:
-            - redis_net
-
-    mongodb:
-        image: mongo:4.4.5-bionic
-        restart: unless-stopped
-        volumes:
-            - ./mongo-entrypoint:/docker-entrypoint-initdb.d
-            - mongodb:/data/db
-            - mongoconfig:/data/configdb
-        networks:
-            - mongo_net
-
     web:
         image: trada:latest
+        container_name: trada
         env_file:
             - .env
         command: python src/main.py 
-        restart: unless-stopped
+        restart: always
         ports:
             - "5000:5000"
-        # depends_on:
-        #     - redis
-        #     - mongodb
         logging:
             driver: "json-file"
             options:
                 max-size: "200M"
                 max-file: "5"
-        # networks:
-        #     - redis_net
-        #     - mongo_net
-
-volumes:
-    mongodb:
-    mongoconfig:
-    redis-data:
-
-networks:
-    mongo_net:
-    redis_net:
