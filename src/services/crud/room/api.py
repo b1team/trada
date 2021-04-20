@@ -25,11 +25,10 @@ def invite_member(room_id: str, member_name: str):
         if not member_id:
             raise user_errors.NotFoundError(obj=f"User {member_name}")
         member = logic.check_member_exists(room_id, member_id)
-    except:
+    except Exception as e:
         raise room_errors.IdFormatError()
     if member:
         raise room_errors.ExistingError(obj=f"Member {member_name}")
-
     return logic.invite_member(room_id, member_name)
 
 

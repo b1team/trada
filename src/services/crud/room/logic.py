@@ -21,8 +21,9 @@ def get_room(room_name: str):
 
 
 def check_member_exists(room_id: str, member_id: str):
-    member = RoomMember.objects(room_id=room_id, member_id=member_id).first()
-    if member:
+    member = RoomMember.objects(room_id=str(room_id),
+                                member_id=str(member_id)).first()
+    if str(member.id) != None:
         return True
     return False
 
@@ -64,7 +65,8 @@ def remove_room(room_id: str):
 
 def remove_member(room_id: str, member_name: str):
     user = user_logic.get_user(member_name)
-    member = RoomMember.objects(room_id=room_id, member_id=str(user.id)).first()
+    member = RoomMember.objects(room_id=room_id,
+                                member_id=str(user.id)).first()
     member.delete()
 
     return str(user.id)
