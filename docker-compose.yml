@@ -2,16 +2,33 @@ version: "3.7"
 
 services:
     web:
-        image: trada:latest
+        # image: trada:latest
+        build: .
         container_name: trada
         env_file:
             - .env
         command: python src/main.py 
         restart: always
-        ports:
+        ports: 
             - "5000:5000"
+        expose: 
+            - 5000
         logging:
             driver: "json-file"
             options:
                 max-size: "200M"
                 max-file: "5"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.fastapi.rule=Host(`fastapi.localhost.com`)"
+            - "traefik.http.routers.fastapi.tls=true"
+            - "traefik.http.routers.fastapi.tls.certresolver=letsencrypt"
+
+    traefik:
+        image: traefik:v2.2
+        ports:
+            - "8080:80"
+            - "443:443"
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
+            - "$PWD/traefik.toml:/etc/traefik/traefik.toml"
