@@ -1,14 +1,21 @@
+defaultEntryPoints = ["http", "https"]
+
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-  [entryPoints.web.http]
-    [entryPoints.web.http.redirections]
-      [entryPoints.web.http.redirections.entryPoint]
-        to = "websecure"
-        scheme = "https"
 
   [entryPoints.websecure]
     address = ":443"
+
+      [entryPoints.websecure.http.tls]
+        certResolver = "leresolver"
+
+    [entryPoints.web.http]
+      [entryPoints.web.http.redirections]
+        [entryPoints.web.http.redirections.entryPoint]
+          to = "websecure"
+          scheme = "https"
+          priority = 10
 
 [accessLog]
 
@@ -21,3 +28,9 @@
   storage= "acme.json"
   [certificatesResolvers.letsencrypt.acme.httpChallenge]
     entryPoint = "web"
+
+[http.services]
+  [http.services.web.loadBalancer]
+
+    [[http.services.web.loadBalancer.servers]]
+      url = "http:118.68.133.236:5000"
