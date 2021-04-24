@@ -51,17 +51,16 @@ services:
     traefik:
         image: traefik:v2.4
         ports:
-            - "80:80"
+            - "8080:80"
             - "443:443"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - "./acme.json:/acme.json"
             - "./user:/user"
-            - /certificates:/certificates
         labels:
              # Enable Traefik for this service, to make it available in the public network
             - traefik.enable=true
-            - traefik.http.routers.traefik-dashboard-https.middlewares=admin-auth
+            - traefik.http.routers.traefik-dashboard-https.middlewares=traefik-auth
             # Define the port inside of the Docker service to use
             - traefik.http.services.traefik.loadbalancer.server.port=80
             # Make Traefik use this domain in HTTP
@@ -83,13 +82,13 @@ services:
             # traefik-http set up only to use the middleware to redirect to https
             - traefik.http.routers.traefik-http.middlewares=https-redirect
             # admin-auth middleware with HTTP Basic auth with default = user: password
-            - traefik.http.middlewares.admin-auth.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/
+            - traefik.http.middlewares.traefik-auth.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/
             # Using the environment variables USERNAME and HASHED_PASSWORD
             # - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
             # Enable HTTP Basic auth, using the middleware created above
-            - traefik.http.middlewares.secured.chain.middlewares=https-only,known-ips,admin-auth
-            - traefik.http.middlewares.admin-auth.basicauth.headerField=X-WebAuth-User
-            - traefik.http.middlewares.admin-auth.basicauth.removeheader=true
+            - traefik.http.middlewares.secured.chain.middlewares=https-only,known-ips,traefik-auth
+            - traefik.http.middlewares.traefik-auth.basicauth.headerField=X-WebAuth-User
+            - traefik.http.middlewares.traefik-auth.basicauth.removeheader=true
         command: 
              # Enable Docker in Traefik, so that it reads labels from Docker services
             - --providers.docker
@@ -103,7 +102,7 @@ services:
             - --certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
             - --certificatesresolvers.le.acme.email=bvngoc2000@gmail.com
             # Store the Let's Encrypt certificates in the mounted volume
-            - --certificatesresolvers.le.acme.storage=/certificates/acme.json
+            - --certificatesresolvers.le.acme.storage=/acme.json
             # Use the TLS Challenge for Let's Encrypt
             - --certificatesresolvers.le.acme.tlschallenge=true
             # Enable the access log, with HTTP requests
