@@ -8,10 +8,6 @@ services:
             - .env
         command: python src/main.py 
         restart: always
-        ports: 
-            - "5000:5000"
-        expose: 
-            - 5000
         logging:
             driver: "json-file"
             options:
@@ -21,9 +17,11 @@ services:
             - traefik.enable=true
             - traefik.http.services.web.loadbalancer.server.port=5000
             - traefik.http.routers.web.entrypoints=websecure
+            # - traefik.http.routers.web-http.entryPoint=http
             - traefik.http.routers.web.rule=Host(`trada.fastapi.localhost`)
             - traefik.http.routers.web.tls=true
-            - traefik.http.routers.web.tls.certresolver=leresolver
+            - traefik.http.routers.web.tls.certresolver=lets-encrypt
+            - traefik.http.routers.web.tls.domains[0].main=trada.fastapi.localhost
             - traefik.http.middlewares.web.redirectscheme.scheme=https
             - traefik.http.middlewares.web.redirectscheme.permanent=true
             - traefik.http.routers.web.middlewares=auth
@@ -37,12 +35,13 @@ services:
             - traefik.http.middlewares.secured.chain.middlewares=https-only,known-ips,auth
             - traefik.http.middlewares.auth.basicauth.usersfile=/user
             - traefik.http.middlewares.https-only.redirectscheme.scheme=https
+            - traefik.docker.network=traefik-public
         networks:
             # Use the public network created to be shared between Traefik and
             # any other service that needs to be publicly available with HTTPS
             - traefik-public
 
-    reverse-proxy:
+    traefik:
         image: traefik:v2.4
         command: 
             - --log.level=DEBUG
@@ -66,17 +65,19 @@ services:
             - "8080:8080"
             - "443:443"
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+            - /var/run/docker.sock:/var/run/docker.sock:ro
             - "./acme.json:/acme.json"
             - "./user:/user"
-            - traefik-public-certificates:/certificates
+            - ./certificates:/certificates
         labels:
             - traefik.enable=true
             - traefik.docker.network=traefik-public
             # Dashboard
             - "traefik.http.routers.traefik.rule=Host(`traefik.docker.localhost`)"
+            - "traefik.http.services.traefik.loadbalancer.server.port=80"
             - "traefik.http.routers.traefik.service=api@internal"
-            - "traefik.http.routers.traefik.tls.certresolver=leresolver"
+            - "traefik.http.routers.traefik.tls.certresolver=lets-encrypt"
+            - "traefik.http.routers.traefik.tls.domains[0].main=traefik.docker.localhost"
             - "traefik.http.routers.traefik.entrypoints=websecure"
             - "traefik.http.routers.traefik.middlewares=authtraefik"
             # defalult user: user password
