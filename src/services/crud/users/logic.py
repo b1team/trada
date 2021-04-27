@@ -39,7 +39,7 @@ def save_user(username: str, password: str, name: str):
 def get_user_profile(username: str):
     user = User.objects(username=username).first()
 
-    return user.to_json()
+    return user.to_dict()
 
 
 def update_current_user(

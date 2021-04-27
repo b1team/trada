@@ -7,7 +7,6 @@ from fastapi.param_functions import Depends
 from src.api.depends.auth import get_current_user
 from src.libs.models.users import User
 from src.services.crud import messages as message
-from src.services.crud import room
 from src.services.crud.messages import logic as message_logic
 from src.services.crud.room import logic as room_logic
 
