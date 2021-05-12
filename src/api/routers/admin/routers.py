@@ -58,7 +58,7 @@ def load_rooms():
     return {"rooms": rooms, "count": len(rooms)}
 
 
-@router.delete("/adin/rooms")
+@router.delete("/admin/rooms")
 def delete_room(room_id: str):
     _delete_room = admin.remove_room(room_id)
 

@@ -7,7 +7,7 @@ from src.libs.models.message import Messages
 from src.libs.models.room import Room
 from src.libs.models.room_member import RoomMember
 from src.libs.models.users import User
-from src.services.crud.room import logic as room_logic
+from src.services.crud.messages import logic as mess_logic
 
 
 # USER
@@ -35,7 +35,8 @@ def users_load():
 
 def user_disable(user_id: str):
     user = User.objects(id=ObjectId(user_id)).first()
-    user.update(active=False)
+    active = not user.active
+    user.update(active=active)
 
     return True
 
@@ -57,7 +58,7 @@ def rooms_load():
         members = RoomMember.objects(room_id=str(room.id))
         messages_count = Messages.objects(room_id=str(room.id)).count()
         _room = room.to_dict()
-        last_message = room_logic.get_last_message(room.room_id)
+        last_message = mess_logic.get_last_message(str(room.id))
         try:
             last_message['timestamp'] = parse(
                 last_message['created_at']).strftime('%d %b,%Y %H:%M')
