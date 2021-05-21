@@ -5,3 +5,6 @@ from .api import disable_user
 from .api import load_rooms
 from .api import remove_room
 from .api import messages_count
+from .api import get_admin
+from .api import update_admin
+from .api import create_admin

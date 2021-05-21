@@ -8,20 +8,25 @@ from src.libs.models.room import Room
 from src.libs.models.room_member import RoomMember
 from src.libs.models.users import User
 from src.services.crud.messages import logic as mess_logic
+from src.libs.models.admin import Admin
 
 
 # USER
 def user_create(username: str, password: str, name: str):
-    username = username.strip()
-    password = password.strip()
-    name = name.strip()
+    user = User(username=username, password=password, name=name)
+    return user.save()
 
-    if (username and password and name) == "":
-        return {"detail": "data empty"}
+def get_user_by_id(user_id: str):
+    return Admin.objects(id=ObjectId(user_id)).first()
 
-    new_user = User(username=username, password=password, name=name)
 
-    return new_user.save()
+def save_user(username: str, password: str, name: str):
+    user = Admin(username=username, password=password, name=name)
+    return user.save()
+
+
+def get_user(username: str):
+    return Admin.objects(username=username).first()
 
 
 def users_load():
@@ -31,6 +36,23 @@ def users_load():
         list_users.append(user.to_dict())
 
     return list_users
+
+
+def update_current_admin(
+    user_id: str,
+    username: str,
+    avatar: Optional[str] = None,
+    name: Optional[str] = None,
+):
+    user = Admin.objects(id=ObjectId(user_id))
+    fileds = {
+        "username": username,
+        "avatar": avatar,
+        "name": name,
+    }
+    user.update(**fileds)
+
+    return True
 
 
 def user_disable(user_id: str):

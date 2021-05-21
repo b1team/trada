@@ -42,3 +42,15 @@ class UserProfileResponseSchema(BaseModel):
 class RoomSchemas(BaseModel):
     room_id: Optional[str] = None
     member_name: Optional[str] = None
+
+
+class UpdateUserSchema(BaseModel):
+    username: Optional[str] = None
+    name: Optional[str] = None
+    avatar: Optional[str] = None
+
+
+class UpdateUserResponseSchema(BaseModel):
+    username: Optional[str] = None
+    name: Optional[str] = None
+    avatar: Optional[str] = None
