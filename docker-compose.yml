@@ -8,48 +8,48 @@ services:
             - .env
         command: python src/main.py 
         restart: always
-        ports:
-            - "9000:9000"
+        # ports:
+        #     - "9000:9000"
         logging:
             driver: "json-file"
             options:
                 max-size: "200M"
                 max-file: "5"
-        # labels:
-        #     # Enable Traefik for this specific "backend" service
-        #     - traefik.enable=true
-        #     # Define the port inside of the Docker service to use
-        #     - traefik.http.services.backend.loadbalancer.server.port=9000
-        #     # Make Traefik use this domain in HTTP
-        #     - traefik.http.routers.backend-http.entrypoints=http
-        #     - traefik.http.routers.backend-http.rule=Host(`fastapi.localhost`)
+        labels:
+            # Enable Traefik for this specific "backend" service
+            - traefik.enable=true
+            # Define the port inside of the Docker service to use
+            - traefik.http.services.backend.loadbalancer.server.port=9000
+            # Make Traefik use this domain in HTTP
+            - traefik.http.routers.backend-http.entrypoints=http
+            - traefik.http.routers.backend-http.rule=Host(`fastapi.localhost`)
             # Use the traefik-public network (declared below)
-            # - traefik.http.routers.api.service=api@internal
-        #     - traefik.docker.network=traefik-public
-        #     # Make Traefik use this domain in HTTPS
-        #     # - traefik.http.routers.backend-https.entrypoints=https
-        #     # - traefik.http.routers.backend-https.rule=Host(`fastapi.localhost`)
-        #     # - traefik.http.routers.backend-https.tls=true
-        #     # Use the "le" (Let's Encrypt) resolver
-        #     # - traefik.http.routers.backend-https.tls.certresolver=le
-        #     # https-redirect middleware to redirect HTTP to HTTPS
-        #     # - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-        #     # - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
-        #     # Middleware to redirect HTTP to HTTPS
-        #     # - traefik.http.routers.backend-http.middlewares=https-redirect
-        #     # - traefik.http.routers.backend-https.middlewares=admin-auth
-        #     # default user -> user : password
-        #     # - traefik.http.middlewares.admin-auth.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/
-        #     # can export username and pass word in termial
-        #     # export USERNAME=admin ; export PASSWORD=changethis; export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
-        #     # - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
-        #     # - traefik.http.middlewares.secured.chain.middlewares=https-only,known-ips,auth
-        #     # - traefik.http.middlewares.admin-auth.basicauth.headerField=X-WebAuth-User
-        #     # - traefik.http.middlewares.admin-auth.basicauth.removeheader=true
-        # networks:
-        #     # Use the public network created to be shared between Traefik and
-        #     # any other service that needs to be publicly available with HTTPS
-        #     - traefik-public
+            - traefik.http.routers.api.service=api@internal
+            - traefik.docker.network=traefik-public
+            # Make Traefik use this domain in HTTPS
+            # - traefik.http.routers.backend-https.entrypoints=https
+            # - traefik.http.routers.backend-https.rule=Host(`fastapi.localhost`)
+            # - traefik.http.routers.backend-https.tls=true
+            # Use the "le" (Let's Encrypt) resolver
+            # - traefik.http.routers.backend-https.tls.certresolver=le
+            # https-redirect middleware to redirect HTTP to HTTPS
+            # - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+            # - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+            # Middleware to redirect HTTP to HTTPS
+            # - traefik.http.routers.backend-http.middlewares=https-redirect
+            # - traefik.http.routers.backend-https.middlewares=admin-auth
+            # default user -> user : password
+            # - traefik.http.middlewares.admin-auth.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/
+            # can export username and pass word in termial
+            # export USERNAME=admin ; export PASSWORD=changethis; export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
+            # - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
+            # - traefik.http.middlewares.secured.chain.middlewares=https-only,known-ips,auth
+            # - traefik.http.middlewares.admin-auth.basicauth.headerField=X-WebAuth-User
+            # - traefik.http.middlewares.admin-auth.basicauth.removeheader=true
+        networks:
+            # Use the public network created to be shared between Traefik and
+            # any other service that needs to be publicly available with HTTPS
+            - traefik-public
 
     traefik:
         image: traefik:v2.4
