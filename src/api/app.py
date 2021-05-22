@@ -33,8 +33,8 @@ def shutdown_event():
 
 
 origins = [
-    "http://localhost:8000", "http://localhost:5000",
-    "http://192.168.248.18:8000", "http://192.168.248.18:5000"
+    "http://localhost:8000", "http://localhost:5000","https://localhost:5000"
+    "http://192.168.248.18:8000", "http://192.168.248.18:5000", "https://192.168.248.18:8000"
 ]
 
 app.add_middleware(
