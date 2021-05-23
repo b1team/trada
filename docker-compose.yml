@@ -39,6 +39,7 @@ services:
             - "8080:8080"
             - "9090:9090"
             - "443:443"
+            - "1010:1010"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - "./acme.json:/acme.json"
@@ -87,6 +88,7 @@ services:
             - --entrypoints.backend.address=:9999
             - --entrypoints.frontend.address=:8080
             - --entrypoints.front.address=:9090
+            - --entrypoints.admin.address=:1010
             # Create the certificate resolver "le" for Let's Encrypt, uses the environment variable EMAIL
             - --certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
             - --certificatesresolvers.le.acme.email=bvngoc2000@gmail.com
