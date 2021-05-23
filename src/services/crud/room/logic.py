@@ -23,9 +23,9 @@ def get_room(room_name: str):
 def check_member_exists(room_id: str, member_id: str):
     member = RoomMember.objects(room_id=str(room_id),
                                 member_id=str(member_id)).first()
-    if str(member.id) != None:
-        return True
-    return False
+    if member == None:
+        return False
+    return True
 
 
 def create_room(room_name: str):
