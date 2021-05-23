@@ -19,7 +19,7 @@ services:
             # Enable Traefik for this specific "backend" service
             - traefik.enable=true
             # Define the port inside of the Docker service to use
-            - traefik.http.services.backend.loadbalancer.server.port=9000
+            - traefik.http.services.backend.loadbalancer.server.port=9999
             # Make Traefik use this domain in HTTP
             - traefik.http.routers.backend-http.entrypoints=http
             - traefik.http.routers.backend-http.rule=Host(`fastapi.localhost`)
