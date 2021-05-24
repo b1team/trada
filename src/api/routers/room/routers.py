@@ -17,7 +17,7 @@ router = APIRouter(tags=["room"])
 def create_room(room_name: str, auth_user: User = Depends(get_current_user)):
     if room_name.strip() == "":
         raise HTTPException(status_code=411, detail="Enter your room name")
-    _room = room.create_room(room_name, str(auth_user.id))
+    _room = room.create_room(room_name.strip(), str(auth_user.id))
 
     return _room
 

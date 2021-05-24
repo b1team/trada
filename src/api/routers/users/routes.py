@@ -31,10 +31,10 @@ def get_user_profile(username: str, user: User = Depends(get_current_user)):
 @router.post("/users", response_model=schemas.CreateUserResponseSchema)
 def create_user(user: schemas.CreateUserSchema):
     auth = AuthService(settings.TOKEN_SECRET_KEY)
-    hashed_password = auth.hash_password(user.password)
-    new_user = users.create_user(username=user.username,
+    hashed_password = auth.hash_password(user.password.strip())
+    new_user = users.create_user(username=user.username.strip(),
                                  password=hashed_password,
-                                 name=user.name)
+                                 name=user.name.strip())
 
     return new_user.to_dict()
 
@@ -42,8 +42,8 @@ def create_user(user: schemas.CreateUserSchema):
 @router.put("/users", response_model=schemas.UpdateUserResponseSchema)
 def update_user(user: schemas.UpdateUserSchema,
                 auth_user: User = Depends(get_current_user)):
-    new_user_info = users.update_user(str(auth_user.id), user.username,
-                                      user.avatar, user.name)
+    new_user_info = users.update_user(str(auth_user.id), user.username.strip(),
+                                      user.avatar.strip(), user.name.strip())
     if new_user_info:
         return user
 

@@ -137,8 +137,8 @@ def get_room_info(room_id: str):
 def update_room(room_id: str, room_name: str, avatar: str):
     room = Room.objects(id=ObjectId(room_id))
     filters = {
-        "room_name": room_name,
-        "avatar": avatar,
+        "room_name": room_name.strip(),
+        "avatar": avatar.strip(),
     }
 
     room.update(**filters)

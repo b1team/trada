@@ -10,6 +10,8 @@ def create_user(
     password: str,
     name: str,
 ):
+    if (username and password and name == "") == "":
+        return
     existing_user = logic.get_user(username)
     if existing_user:
         raise user_errors.ExistingError(obj=f"User {username}")
