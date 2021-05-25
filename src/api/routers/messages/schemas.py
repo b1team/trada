@@ -34,6 +34,7 @@ class MessagesSaveResponeSchema(BaseModel):
 class MessagesUpdateSchema(BaseModel):
     message_id: str
     content: str
+    room_id: str
 
     @validator("content")
     def content_validator(cls, value):
@@ -50,3 +51,9 @@ class MessagesUpdateSchema(BaseModel):
 
 class BasicResponse(BaseModel):
     success: bool
+
+
+class DeleteMessageSchema(BaseModel):
+    message_id: Optional[str] = None
+    room_id: Optional[str] = None
+    index: int

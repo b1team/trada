@@ -5,10 +5,13 @@ from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Depends
 from src.api.depends.auth import get_current_user
+from src.config import settings
 from src.libs.models.users import User
 from src.services.crud import messages as message
 from src.services.crud.messages import logic as message_logic
 from src.services.crud.room import logic as room_logic
+from src.services.crud.room.logic import room_members
+from src.services.message_management.publish import publish_event
 
 from . import schemas
 
@@ -34,21 +37,45 @@ def update_message(message_update: schemas.MessagesUpdateSchema,
                                     str(auth_user.id),
                                     message_update.content)
 
+    members = room_members(message_update.room_id)
+    for member in members:
+        if str(member) != str(auth_user.id):
+            event = {"event_type": "update",
+                     "payload": {"room_id": message_update.room_id,
+                                 "content": message_update.content,
+                                 "message_id": message_update.message_id}}
+            channel = f"{member}_notify"
+            publish_event(redis_uri=settings.REDIS_URI,
+                          channel=channel,
+                          event=event)
+
     if update_message:
         return {"success": True}
 
     return {"success": False}
 
 
-@router.delete("/messages/{message_id}", response_model=schemas.BasicResponse)
-def delete_message(message_id: str,
+@router.delete("/messages", response_model=schemas.BasicResponse)
+def delete_message(data: schemas.DeleteMessageSchema,
                    auth_user: User = Depends(get_current_user)):
-    if message_id.strip() == "":
+    if data.message_id.strip() == "":
         raise HTTPException(status_code=404,
                             detail="message_id must not be space")
-    if str(auth_user.id) != message_logic.get_user_id_by_message(message_id):
+    if str(auth_user.id) != message_logic.get_user_id_by_message(data.message_id):
         raise HTTPException(status_code=403, detail='Permission denied')
-    delete_mess = message.delete(message_id, str(auth_user.id))
+    delete_mess = message.delete(data.message_id, str(auth_user.id))
+
+    members = room_members(data.room_id)
+    for member in members:
+        if str(member) != str(auth_user.id):
+            event = {"event_type": "delete_mess",
+                     "payload": {"room_id": data.room_id,
+                                 "message_id": data.message_id,
+                                 "index": data.index}}
+            channel = f"{member}_notify"
+            publish_event(redis_uri=settings.REDIS_URI,
+                          channel=channel,
+                          event=event)
 
     if delete_mess:
         return {"success": True}
