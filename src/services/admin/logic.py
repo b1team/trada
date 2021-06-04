@@ -65,11 +65,15 @@ def user_disable(user_id: str):
 
 
 def user_delete(user_id: str):
-    user = User.objects(id=ObjectId(user_id))
+    user = User.objects(id=user_id)
     members = RoomMember.objects(member_id=str(user_id))
+    if not members:
+        user.delete()
+        return True
     for member in members:
         if member.is_owner:
             return False
+
     user.delete()
     member.delete()
 
@@ -114,6 +118,11 @@ def room_delete(room_id: str):
     room = Room.objects(id=ObjectId(room_id)).first()
     member = RoomMember.objects(room_id=room_id)
     messages = Messages.objects(room_id=room_id)
+    if not messages:
+        room.delete()
+        member.delete()
+        return True
+
     room.delete()
     member.delete()
     messages.delete()

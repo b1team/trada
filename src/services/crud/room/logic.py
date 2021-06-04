@@ -56,6 +56,11 @@ def remove_room(room_id: str):
     room = Room.objects(id=ObjectId(room_id)).first()
     member = RoomMember.objects(room_id=room_id)
     messages = Messages.objects(room_id=room_id)
+    if not messages:
+        room.delete()
+        member.delete()
+        return True
+
     room.delete()
     member.delete()
     messages.delete()
