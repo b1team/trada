@@ -8,3 +8,4 @@ from .api import messages_count
 from .api import get_admin
 from .api import update_admin
 from .api import create_admin
+from .api import delete_user

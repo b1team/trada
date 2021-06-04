@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
@@ -16,7 +16,7 @@ router = APIRouter(tags=["admin"])
 
 
 @router.post("/admin/user", response_model=schemas.CreateUserResponseSchema)
-def create_user(user: schemas.CreateUserSchema):
+def create_user(user: schemas.CreateUserSchema, auth_user: AdminModel = Depends(get_current_user)):
     auth = AdminAuthService(settings.ADMIN_TOKEN_SECRET_KEY)
     hashed_password = auth.hash_password(user.password)
     new_user = admin.create_user(username=user.username,
@@ -27,7 +27,7 @@ def create_user(user: schemas.CreateUserSchema):
 
 
 @router.post("/admin/ad", response_model=schemas.CreateUserResponseSchema)
-def create_admin(user: schemas.CreateUserSchema):
+def create_admin(user: schemas.CreateUserSchema, auth_user: AdminModel = Depends(get_current_user)):
     auth = AdminAuthService(settings.ADMIN_TOKEN_SECRET_KEY)
     hashed_password = auth.hash_password(user.password)
     new_user = admin.create_admin(username=user.username,
@@ -44,7 +44,7 @@ def get_me(user: AdminModel = Depends(get_current_user)):
 
 @router.get("/admin/{username}",
             response_model=schemas.UserProfileResponseSchema)
-def get_admin_profile(username: str):
+def get_admin_profile(username: str, auth_user: AdminModel = Depends(get_current_user)):
     if username.strip() == "":
         raise HTTPException(status_code=411,
                             detail="Username must not be space")
@@ -63,20 +63,27 @@ def update_admin(user: schemas.UpdateUserSchema,
 
 
 @router.get("/admin/user/all")
-def users_load():
+def users_load(auth_user: AdminModel = Depends(get_current_user)):
     try:
-        print("VAO DAY")
         users = admin.load_users()
     except Exception as e:
-        print("LOAD USER ERROR")
         raise e
 
     return {"users": users, "count": len(users)}
 
 
 @router.put("/admin/user")
-def disable_user(user_id: str):
+def disable_user(user_id: str, auth_user: AdminModel = Depends(get_current_user)):
     user = admin.disable_user(user_id)
+
+    if user:
+        return {"success": True}
+    return {"success": False}
+
+
+@router.delete("/admin/user")
+def delete_user(user_id: str, auth_user: AdminModel = Depends(get_current_user)):
+    user = admin.delete_user(user_id)
 
     if user:
         return {"success": True}
@@ -93,14 +100,14 @@ def create_room(room_name: str, auth_user: AdminModel = Depends(get_current_user
 
 
 @router.get("/admin/rooms/all")
-def load_rooms():
+def load_rooms(auth_user: AdminModel = Depends(get_current_user)):
     rooms = admin.load_rooms()
 
     return {"rooms": rooms, "count": len(rooms)}
 
 
 @router.delete("/admin/rooms")
-def delete_room(room_id: str):
+def delete_room(room_id: str, auth_user: AdminModel = Depends(get_current_user)):
     _delete_room = admin.remove_room(room_id)
 
     if _delete_room:
@@ -112,6 +119,7 @@ def delete_room(room_id: str):
 def get_messages(
     start_time: Optional[datetime] = None,
     end_time: Optional[datetime] = None,
+    auth_user: AdminModel = Depends(get_current_user)
 ):
 
     _messages = admin.messages_count(start_time=start_time, end_time=end_time)

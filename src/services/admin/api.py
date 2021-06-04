@@ -59,6 +59,15 @@ def disable_user(user_id: str):
     return user_disable
 
 
+def delete_user(user_id: str):
+    try:
+        del_user = logic.user_delete(user_id)
+    except:
+        raise user_errors.IdFormatError()
+
+    return del_user
+
+
 def create_room(room_name: str, user_id: str):
     if logic.get_room(room_name):
         raise room_errors.ExistingError(obj=f"Room {room_name}")

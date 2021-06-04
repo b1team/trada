@@ -16,6 +16,7 @@ def user_create(username: str, password: str, name: str):
     user = User(username=username, password=password, name=name)
     return user.save()
 
+
 def get_user_by_id(user_id: str):
     return Admin.objects(id=ObjectId(user_id)).first()
 
@@ -35,7 +36,7 @@ def users_load():
     for user in users:
         list_users.append(user.to_dict())
 
-    return list_users
+    return list_users[-5:]
 
 
 def update_current_admin(
@@ -59,6 +60,18 @@ def user_disable(user_id: str):
     user = User.objects(id=ObjectId(user_id)).first()
     active = not user.active
     user.update(active=active)
+
+    return True
+
+
+def user_delete(user_id: str):
+    user = User.objects(id=ObjectId(user_id))
+    members = RoomMember.objects(member_id=str(user_id))
+    for member in members:
+        if member.is_owner:
+            return False
+    user.delete()
+    member.delete()
 
     return True
 
@@ -94,7 +107,7 @@ def rooms_load():
             _room["member"].append(user.to_dict())
         list_rooms.append(_room)
 
-    return list_rooms
+    return list_rooms[-5:]
 
 
 def room_delete(room_id: str):
