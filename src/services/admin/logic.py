@@ -36,7 +36,7 @@ def users_load():
     for user in users:
         list_users.append(user.to_dict())
 
-    return list_users[-5:]
+    return list_users
 
 
 def update_current_admin(
@@ -111,7 +111,7 @@ def rooms_load():
             _room["member"].append(user.to_dict())
         list_rooms.append(_room)
 
-    return list_rooms[-5:]
+    return list_rooms
 
 
 def room_delete(room_id: str):

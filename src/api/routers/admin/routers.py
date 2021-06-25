@@ -69,7 +69,7 @@ def users_load(auth_user: AdminModel = Depends(get_current_user)):
     except Exception as e:
         raise e
 
-    return {"users": users, "count": len(users)}
+    return {"users": users, "five_users": users[-5:],"count": len(users)}
 
 
 @router.put("/admin/user")
@@ -103,7 +103,7 @@ def create_room(room_name: str, auth_user: AdminModel = Depends(get_current_user
 def load_rooms(auth_user: AdminModel = Depends(get_current_user)):
     rooms = admin.load_rooms()
 
-    return {"rooms": rooms, "count": len(rooms)}
+    return {"rooms": rooms, "five_rooms": rooms[-5:],"count": len(rooms)}
 
 
 @router.delete("/admin/rooms")
