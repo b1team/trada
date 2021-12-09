@@ -1,5 +1,6 @@
 # trada
 ```
+cp .env.template .env
 poetry env use python3.x
 poetry install
 export PYTHONPATH=$PWD
