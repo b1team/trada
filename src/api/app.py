@@ -33,8 +33,7 @@ def shutdown_event():
 
 
 origins = [
-    "http://localhost:8000", "http://localhost:5000",
-    "http://chat.b1corp.xyz"
+    "http://localhost:8000", "http://localhost:5000", "http://chat.b1corp.xyz"
 ]
 
 app.add_middleware(

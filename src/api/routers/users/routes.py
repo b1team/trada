@@ -42,6 +42,8 @@ def create_user(user: schemas.CreateUserSchema):
 @router.put("/users", response_model=schemas.UpdateUserResponseSchema)
 def update_user(user: schemas.UpdateUserSchema,
                 auth_user: User = Depends(get_current_user)):
+    if user.username.strip() == '':
+        raise HTTPException(status_code=411, detail="Invalid username")
     new_user_info = users.update_user(str(auth_user.id), user.username.strip(),
                                       user.avatar.strip(), user.name.strip())
     if new_user_info:

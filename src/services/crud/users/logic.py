@@ -75,7 +75,7 @@ def check_user_active(username: str):
 
 
 def get_user_id(username: str):
-    user_id =  User.objects(username=username).first().id
+    user_id = User.objects(username=username).first().id
     if user_id:
         return user_id
     return False
