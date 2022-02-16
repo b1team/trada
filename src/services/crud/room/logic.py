@@ -7,6 +7,7 @@ from src.services.crud.users import logic as user_logic
 from bson import ObjectId
 from typing import Optional
 from dateutil.parser import parse
+import datetime
 
 
 def check_room_exists(room_id: str):
@@ -118,6 +119,9 @@ def get_user_room(user_id: str):
             last_message['timestamp'] = parse(
                 last_message['created_at']).strftime('%d %b,%Y %H:%M')
         except:
+            last_message['content'] = ""
+            last_message['timestamp'] = parse(
+                datetime.datetime.utcnow()).strftime('%d %b,%Y %H:%M')
             pass
         data['last_message'] = last_message
         data['unreadCount'] = len(logic.get_unread_messages(info.room_id))
