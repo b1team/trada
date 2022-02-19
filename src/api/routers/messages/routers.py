@@ -34,20 +34,22 @@ def update_message(message_update: schemas.MessagesUpdateSchema,
             message_update.message_id):
         raise HTTPException(status_code=403, detail='Permission denied')
     update_message = message.update(message_update.message_id,
-                                    str(auth_user.id),
-                                    message_update.content)
+                                    str(auth_user.id), message_update.content)
 
     members = room_members(message_update.room_id)
     for member in members:
-        if str(member) != str(auth_user.id):
-            event = {"event_type": "update",
-                     "payload": {"room_id": message_update.room_id,
-                                 "content": message_update.content,
-                                 "message_id": message_update.message_id}}
-            channel = f"{member}_notify"
-            publish_event(redis_uri=settings.REDIS_URI,
-                          channel=channel,
-                          event=event)
+        event = {
+            "event_type": "update",
+            "payload": {
+                "room_id": message_update.room_id,
+                "content": message_update.content,
+                "message_id": message_update.message_id
+            }
+        }
+        channel = f"{member}_notify"
+        publish_event(redis_uri=settings.REDIS_URI,
+                      channel=channel,
+                      event=event)
 
     if update_message:
         return {"success": True}
@@ -61,17 +63,22 @@ def delete_message(data: schemas.DeleteMessageSchema,
     if data.message_id.strip() == "":
         raise HTTPException(status_code=404,
                             detail="message_id must not be space")
-    if str(auth_user.id) != message_logic.get_user_id_by_message(data.message_id):
+    if str(auth_user.id) != message_logic.get_user_id_by_message(
+            data.message_id):
         raise HTTPException(status_code=403, detail='Permission denied')
     delete_mess = message.delete(data.message_id, str(auth_user.id))
 
     members = room_members(data.room_id)
     for member in members:
         if str(member) != str(auth_user.id):
-            event = {"event_type": "delete_mess",
-                     "payload": {"room_id": data.room_id,
-                                 "message_id": data.message_id,
-                                 "index": data.index}}
+            event = {
+                "event_type": "delete_mess",
+                "payload": {
+                    "room_id": data.room_id,
+                    "message_id": data.message_id,
+                    "index": data.index
+                }
+            }
             channel = f"{member}_notify"
             publish_event(redis_uri=settings.REDIS_URI,
                           channel=channel,
@@ -95,7 +102,8 @@ def get_messages_in_room(room_id: Optional[str] = None,
     if start_time:
         # kiem tra thoi gian join group. lay cac message tu luc join thoi
         pass
-    _messages = message.messages_get(room_id=room_id, start_time=start_time,
+    _messages = message.messages_get(room_id=room_id,
+                                     start_time=start_time,
                                      end_time=end_time)
     return {"messages": _messages, "count": len(_messages)}
 

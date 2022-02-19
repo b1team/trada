@@ -39,10 +39,9 @@ def send_message(content: str,
 
         members = room_members(room_id)
         for member in members:
-            if(member != sender_id):
-                publish_event(redis_uri=settings.REDIS_URI,
-                              channel=member,
-                              event=event)
+            publish_event(redis_uri=settings.REDIS_URI,
+                          channel=member,
+                          event=event)
         return message
 
     return False

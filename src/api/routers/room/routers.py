@@ -7,6 +7,7 @@ from src.libs.models.users import User
 from src.services.crud import room
 from src.services.crud.room import logic
 from src.config import settings
+from src.services.crud.room.logic import room_members
 
 from . import schemas
 
@@ -29,6 +30,13 @@ def delete_room(room_id: str, auth_user: User = Depends(get_current_user)):
     _delete_room = room.delete_room(room_id)
 
     if _delete_room:
+        members = room_members(room_id)
+        event = {"event_type": "delete", "payload": {"room_id": room_id}}
+        for member in members:
+            channel = f"{member}_notify"
+            publish_event(redis_uri=settings.REDIS_URI,
+                          channel=channel,
+                          event=event)
         return {"success": True}
     return {"success": False}
 
@@ -94,6 +102,11 @@ def getout_room(data: schemas.BasicSchemas,
                                 member_name=data.member_name)
 
     if member:
+        event = {"event_type": "delete", "payload": {"room_id": data.room_id}}
+        channel = f"{member}_notify"
+        publish_event(redis_uri=settings.REDIS_URI,
+                      channel=channel,
+                      event=event)
         return {"success": True}
     return {"success": False}
 
